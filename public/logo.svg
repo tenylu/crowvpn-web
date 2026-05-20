@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="256px" height="256px" viewBox="0 0 256px 256px" version="1.2">
+  <title>logo</title>
+  <defs>
+    <rect id="path-1" x="0" y="0" width="256" height="256" rx="128"></rect>
+  </defs>
+  <g id="logo" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="512备份-3">
+      <mask id="mask-2" fill="white">
+        <use xlink:href="#path-1"></use>
+      </mask>
+      <use id="矩形" fill="#FE405B" xlink:href="#path-1"></use>
+      <g id="编组-3" mask="url(#mask-2)">
+        <g transform="translate(10.1501, 31)">
+          <path d="M84.4766485,36.1689405 L30.7734177,74.9253861 C28.982052,76.2181755 28.5778761,78.7183771 29.8706654,80.5097427 C30.6226019,81.5516706 31.8292988,82.1689405 33.1142198,82.1689405 L96.0731044,82.1689405 L96.0731044,82.1689405 L84.4766485,36.1689405 Z" id="路径-2" fill="#F1C39D"></path>
+          <path d="M131.349869,0 C160.897103,-7.10542736e-15 184.849869,23.9527659 184.849869,53.5 L184.849869,155 C184.849869,198.630495 149.480364,234 105.849869,234 L77.8498688,234 L77.8498688,234 L77.8498688,53.5 C77.8498688,23.9527659 101.802635,7.10542736e-15 131.349869,0 Z" id="矩形" fill="#000000"></path>
+          <circle id="椭圆形" fill="#FFFFFF" cx="128.849869" cy="51" r="13"></circle>
+          <polygon id="路径" fill="#000000" points="0 153.409225 89.2855377 90.6458282 98.9319 248.382172 9.72323608 196.891937"></polygon>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
