@@ -426,21 +426,24 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
   const [scrolled, setScrolled] = useState(false);
   const [ip, setIp] = useState("获取中...");
   const [isp, setIsp] = useState("获取中...");
-  const [selectedLanguage, setSelectedLanguage] = useState(() => {
-    if (typeof window === "undefined") return defaultLocale;
-
-    const storedLanguage = window.localStorage.getItem("crowvpn-language");
-    return isLocaleCode(storedLanguage) ? storedLanguage : defaultLocale;
-  });
+  const [selectedLanguage, setSelectedLanguage] = useState(defaultLocale);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const storedLanguage = window.localStorage.getItem("crowvpn-language");
+      if (isLocaleCode(storedLanguage)) setSelectedLanguage(storedLanguage);
+    }, 0);
+
     function onLocaleChange(event: Event) {
       const locale = (event as CustomEvent<LocaleCode>).detail;
       if (isLocaleCode(locale)) setSelectedLanguage(locale);
     }
 
     window.addEventListener("crowvpn:locale-change", onLocaleChange);
-    return () => window.removeEventListener("crowvpn:locale-change", onLocaleChange);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("crowvpn:locale-change", onLocaleChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -455,40 +458,74 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadNetworkInfo() {
+    async function fetchJsonWithTimeout<T>(url: string, timeoutMs = 5000): Promise<T> {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), timeoutMs);
       try {
-        const ipRes = await fetch("https://api.ipify.org?format=json");
-        if (!ipRes.ok) throw new Error("ip fetch failed");
-        const ipJson = (await ipRes.json()) as { ip?: string };
-        if (!cancelled && ipJson.ip) setIp(ipJson.ip);
-      } catch {
-        if (!cancelled) setIp("未知");
+        const response = await fetch(url, {
+          cache: "no-store",
+          signal: controller.signal,
+        });
+        if (!response.ok) throw new Error(`${url} fetch failed`);
+        return (await response.json()) as T;
+      } finally {
+        window.clearTimeout(timer);
       }
+    }
+
+    function cleanIsp(value: string | null | undefined) {
+      return value?.replace(/^AS\d+\s+/i, "").trim() || null;
+    }
+
+    async function loadNetworkInfo() {
+      let nextIp: string | null = null;
+      let nextIsp: string | null = null;
 
       try {
-        const ispRes = await fetch("https://ipapi.co/json/");
-        if (!ispRes.ok) throw new Error("isp fetch failed");
-        const ispJson = (await ispRes.json()) as { org?: string; asn?: string };
-        const merged = [ispJson.org, ispJson.asn].filter(Boolean).join(" ");
-        if (!cancelled) setIsp(merged || "未知");
+        const data = await fetchJsonWithTimeout<{ ip?: string | null; isp?: string | null }>("/api/network-info");
+        nextIp = data.ip || null;
+        nextIsp = data.isp || null;
       } catch {
+        // Fall back to browser-side providers below.
+      }
+
+      if (!nextIp) {
         try {
-          const backupRes = await fetch("https://ipwho.is/");
-          if (!backupRes.ok) throw new Error("backup isp fetch failed");
-          const backupJson = (await backupRes.json()) as {
-            connection?: { isp?: string; org?: string; asn?: string };
-          };
-          const merged = [
-            backupJson.connection?.isp,
-            backupJson.connection?.org,
-            backupJson.connection?.asn,
-          ]
-            .filter(Boolean)
-            .join(" ");
-          if (!cancelled) setIsp(merged || "未知");
+          const data = await fetchJsonWithTimeout<{ ip?: string }>("https://api.ipify.org?format=json", 3500);
+          nextIp = data.ip || null;
         } catch {
-          if (!cancelled) setIsp("未知");
+          // Keep unknown when all providers fail.
         }
+      }
+
+      if (!nextIsp) {
+        try {
+          const data = await fetchJsonWithTimeout<{ ip?: string; org?: string }>("https://ipinfo.io/json", 3500);
+          nextIp = nextIp || data.ip || null;
+          nextIsp = cleanIsp(data.org);
+        } catch {
+          try {
+            const data = await fetchJsonWithTimeout<{ org?: string; asn?: string }>("https://ipapi.co/json/", 3500);
+            nextIsp = [cleanIsp(data.org), data.asn].filter(Boolean).join(" ") || null;
+          } catch {
+            try {
+              const data = await fetchJsonWithTimeout<{
+                ip?: string;
+                connection?: { isp?: string; org?: string; asn?: string };
+              }>("https://ipwho.is/", 3500);
+              nextIp = nextIp || data.ip || null;
+              nextIsp =
+                [data.connection?.isp, data.connection?.org, data.connection?.asn].filter(Boolean).join(" ") || null;
+            } catch {
+              // Keep unknown when all providers fail.
+            }
+          }
+        }
+      }
+
+      if (!cancelled) {
+        setIp(nextIp || "未知");
+        setIsp(nextIsp || "未知");
       }
     }
 
@@ -535,6 +572,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
 
   return (
     <header
+      data-no-translate
       className={`fixed inset-x-0 top-0 z-50 transition-colors ${
         scrolled
           ? "border-b border-black/5 bg-white/55 backdrop-blur-xl"
