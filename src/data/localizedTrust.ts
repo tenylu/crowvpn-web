@@ -205,10 +205,10 @@ const trustPacks = {
   nl: {
     brands: [brand("philips", "Philips"), brand("asml", "ASML"), brand("booking", "Booking.com", 152), brand("adyen", "Adyen"), brand("ing", "ING"), brand("heineken", "Heineken"), brand("ikea", "IKEA")],
     reviews: [
-      { brand: "booking", name: "Sanne de Vries", orgLine: "Booking.com · Travel", quote: "When switching between hotels and offices, CrowVPN keeps partner tools and calls available without making the network the main task." },
-      { brand: "asml", name: "Daan Jansen", orgLine: "ASML · Engineering", quote: "International project documents and meetings are more reliable when I am on the road." },
-      { brand: "adyen", name: "Eva Smit", orgLine: "Adyen · Support", quote: "Public Wi‑Fi feels less unpredictable, especially when urgent customer dashboards need to load." },
-      { brand: "philips", name: "Noah Bakker", orgLine: "Philips · Product", quote: "It is simple enough for daily use and stable enough for cross-border collaboration." },
+      { brand: "booking", name: "Sanne de Vries", orgLine: "Booking.com · Travel", quote: "Wanneer ik wissel tussen hotels en kantoren, houdt CrowVPN partnertools en gesprekken bereikbaar zonder dat het netwerk de hoofdtaak wordt." },
+      { brand: "asml", name: "Daan Jansen", orgLine: "ASML · Engineering", quote: "Internationale projectdocumenten en vergaderingen zijn betrouwbaarder bereikbaar wanneer ik onderweg ben." },
+      { brand: "adyen", name: "Eva Smit", orgLine: "Adyen · Support", quote: "Openbare wifi voelt minder onvoorspelbaar, vooral wanneer urgente klantdashboards meteen moeten laden." },
+      { brand: "philips", name: "Noah Bakker", orgLine: "Philips · Product", quote: "Het is eenvoudig genoeg voor dagelijks gebruik en stabiel genoeg voor samenwerking over landsgrenzen heen." },
     ],
   },
   pt: {
@@ -231,6 +231,22 @@ const trustPacks = {
   },
 } satisfies Partial<Record<LocaleCode, TrustPack>>;
 
+const englishBrands = trustPacks.en.brands;
+const zhBrands = zhCnPack.brands;
+
+function withBrandSet(pack: TrustPack, brands: LocalizedBrand[]): TrustPack {
+  return {
+    brands,
+    reviews: pack.reviews.map((review, index) => ({
+      ...review,
+      brand: brands[index % brands.length]!.slug,
+    })),
+  };
+}
+
 export function getTrustPack(locale: LocaleCode): TrustPack {
-  return locale === defaultLocale ? zhCnPack : trustPacks.en;
+  if (locale === defaultLocale) return zhCnPack;
+
+  const pack = trustPacks[locale] ?? trustPacks.en;
+  return withBrandSet(pack, locale === "zh-HK" ? zhBrands : englishBrands);
 }

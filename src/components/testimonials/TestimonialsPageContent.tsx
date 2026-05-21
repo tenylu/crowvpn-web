@@ -70,9 +70,9 @@ function ComparisonMark({ value, featured = false }: { value: boolean; featured?
 export function TestimonialsPageContent() {
   return (
     <>
-      <section className="bg-white pb-14 pt-16 sm:pb-20 sm:pt-20 lg:pb-24 lg:pt-28">
+      <section className="bg-white pb-14 pt-28 sm:pb-20 sm:pt-20 lg:pb-24 lg:pt-28">
         <div className="mx-auto grid max-w-[var(--page-max)] items-center gap-10 px-6 lg:grid-cols-[0.86fr_1.14fr] lg:gap-16 lg:px-10">
-          <div>
+          <div className="order-2 lg:order-1">
             <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-[#171717] sm:text-5xl">
               用户评价和反馈：CrowVPN 值得选择吗？
             </h1>
@@ -95,7 +95,7 @@ export function TestimonialsPageContent() {
             </div>
           </div>
 
-          <div className="relative overflow-hidden rounded-[28px]">
+          <div className="order-1 relative overflow-hidden rounded-[28px] lg:order-2">
             <Image
               src="/images/testimonials-hero.png"
               alt="两位用户正在查看手机"

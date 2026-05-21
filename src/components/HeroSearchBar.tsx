@@ -47,7 +47,8 @@ export function HeroSearchBar() {
   const [clientIp, setClientIp] = useState<string>("获取中...");
 
   useEffect(() => {
-    setMounted(true);
+    const timer = window.setTimeout(() => setMounted(true), 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -114,7 +115,7 @@ export function HeroSearchBar() {
     setTarget(null);
     setSelected(null);
     setClientIp("获取中...");
-  }, []);
+  }, [setOpen]);
 
   useEffect(() => {
     if (!open) return;
@@ -234,6 +235,7 @@ export function HeroSearchBar() {
                     <button
                       type="button"
                       role="option"
+                      aria-selected={selected === d.name}
                       onClick={() => pick(d)}
                       className="flex w-full items-center gap-3 rounded-[14px] px-2 py-2 text-left transition hover:bg-black/[0.03]"
                     >
@@ -345,7 +347,7 @@ export function HeroSearchBar() {
         type="button"
         onClick={() => setOpen(true)}
         aria-label={selected ? `已选择 ${selected}，点击可更改` : "搜索目的地，点击打开列表"}
-        className="relative z-20 mt-8 flex w-full max-w-[21.6rem] cursor-pointer items-center gap-2 rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-[15px] text-left shadow-[var(--shadow-card)] transition hover:border-[var(--border-strong)]"
+        className="relative z-20 mt-8 flex w-full cursor-pointer items-center gap-2 rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-[15px] text-left shadow-[var(--shadow-card)] transition hover:border-[var(--border-strong)] sm:max-w-[21.6rem]"
       >
         <span className={`min-w-0 flex-1 text-sm ${selected ? "text-[#171717]" : "text-[#a3a3a3]"}`}>
           {selected ?? "搜索目的地"}

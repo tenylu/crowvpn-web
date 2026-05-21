@@ -11,7 +11,7 @@ const HERO_ART_SRC = "/images/security-banner.png";
 export function SecurityPageHero() {
   return (
     <section
-      className="relative isolate w-full min-h-[min(72vh,700px)] overflow-x-clip pb-0 pt-[calc(2rem+4.25rem+1.25rem)] sm:min-h-[min(76vh,780px)] sm:pt-[calc(2rem+4.25rem+1.5rem)] lg:min-h-[min(78vh,820px)]"
+      className="relative isolate w-full min-h-[780px] overflow-hidden pb-0 pt-[calc(2rem+4.25rem+1.25rem)] sm:min-h-[min(76vh,780px)] sm:pt-[calc(2rem+4.25rem+1.5rem)] lg:min-h-[min(78vh,820px)]"
     >
       <div
         aria-hidden
@@ -22,14 +22,14 @@ export function SecurityPageHero() {
         }}
       />
       <div className="pointer-events-none absolute inset-0 z-[1]">
-        <div className="absolute inset-x-[7%] top-[7%] bottom-0 sm:inset-x-[8%] sm:top-[8%] lg:inset-x-[9%] lg:top-[9%]">
+        <div className="absolute inset-x-[-22%] top-[17%] bottom-0 sm:inset-x-[2%] sm:top-[10%] lg:inset-x-[9%] lg:top-[9%]">
           <div className="relative h-full w-full">
             <LocalizedImage
               zhSrc={HERO_ART_SRC}
               neutralSrc="/images/i18n-neutral/security-banner.png"
               alt="CrowVPN 安全能力示意"
               fill
-              className="object-contain object-bottom"
+              className="scale-[1.18] object-contain object-bottom sm:scale-100"
               priority
               sizes="(max-width: 1024px) 100vw, 90vw"
             />

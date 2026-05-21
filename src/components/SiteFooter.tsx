@@ -111,22 +111,22 @@ export function SiteFooter() {
           />
           CrowVPN
         </Link>
-        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2.5 sm:justify-end sm:gap-3">
           <a
             href="/download"
-            className="inline-flex h-10 shrink-0 items-center opacity-90 transition hover:opacity-100"
+            className="inline-flex h-9 shrink-0 items-center opacity-90 transition hover:opacity-100 sm:h-10"
             aria-label={storeBadges.appStoreLabel}
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- 外链官方徽章 */}
-            <img src={storeBadges.appStore} alt="" width={168} height={50} className="h-10 w-auto object-contain" />
+            <img src={storeBadges.appStore} alt="" width={168} height={50} className="h-9 w-auto object-contain sm:h-10" />
           </a>
           <a
             href="/download"
-            className="inline-flex h-10 shrink-0 items-center opacity-90 transition hover:opacity-100"
+            className="inline-flex h-9 shrink-0 items-center opacity-90 transition hover:opacity-100 sm:h-10"
             aria-label={storeBadges.googlePlayLabel}
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- 外链官方徽章 */}
-            <img src={storeBadges.googlePlay} alt="" width={168} height={50} className="h-10 w-auto object-contain" />
+            <img src={storeBadges.googlePlay} alt="" width={168} height={50} className="h-9 w-auto object-contain sm:h-10" />
           </a>
         </div>
       </div>

@@ -285,7 +285,7 @@ export function WindowsDownloadDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
     >
@@ -293,7 +293,7 @@ export function WindowsDownloadDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="windows-download-title"
-        className="w-full max-w-3xl overflow-hidden rounded-[28px] border border-[var(--border)] bg-white shadow-2xl"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-3xl overflow-y-auto rounded-[24px] border border-[var(--border)] bg-white shadow-2xl sm:rounded-[28px]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="relative overflow-hidden border-b border-[var(--border)] bg-[#f7f9fc] px-6 py-6 sm:px-8 sm:py-7">
@@ -451,7 +451,7 @@ export function MacDownloadDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
     >
@@ -459,7 +459,7 @@ export function MacDownloadDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="mac-download-title"
-        className="max-h-[calc(100vh-3rem)] w-full max-w-3xl overflow-y-auto rounded-[28px] border border-[var(--border)] bg-white shadow-2xl"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-3xl overflow-y-auto rounded-[24px] border border-[var(--border)] bg-white shadow-2xl sm:rounded-[28px]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="relative overflow-hidden border-b border-[var(--border)] bg-[#f7f9fc] px-6 py-6 sm:px-8 sm:py-7">
@@ -575,7 +575,7 @@ export function LinuxDownloadDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
     >
@@ -583,7 +583,7 @@ export function LinuxDownloadDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="linux-download-title"
-        className="max-h-[calc(100vh-3rem)] w-full max-w-4xl overflow-y-auto rounded-[28px] border border-[var(--border)] bg-white shadow-2xl"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-4xl overflow-y-auto rounded-[24px] border border-[var(--border)] bg-white shadow-2xl sm:rounded-[28px]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="relative overflow-hidden border-b border-[var(--border)] bg-[#f7f9fc] px-6 py-6 sm:px-8 sm:py-7">
@@ -699,7 +699,7 @@ export function AndroidDownloadDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-center justify-center bg-black/35 px-4 py-6 backdrop-blur-sm"
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
     >
@@ -707,7 +707,7 @@ export function AndroidDownloadDialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby="android-download-title"
-        className="w-full max-w-2xl overflow-hidden rounded-[28px] border border-[var(--border)] bg-white shadow-2xl"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[24px] border border-[var(--border)] bg-white shadow-2xl sm:rounded-[28px]"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="relative overflow-hidden border-b border-[var(--border)] bg-[#f7f9fc] px-6 py-6 sm:px-8 sm:py-7">
@@ -883,8 +883,8 @@ export function DownloadPageContent() {
   return (
     <>
       <section className="relative isolate overflow-hidden bg-white pt-[calc(2rem+4.25rem)]">
-        <div className="relative z-10 mx-auto grid min-h-[640px] w-full max-w-[var(--page-max)] lg:grid-cols-2">
-          <div className="flex flex-col justify-center px-6 py-12 sm:px-10 sm:py-16 lg:px-10 lg:py-20">
+        <div className="relative z-10 mx-auto grid min-h-[560px] w-full max-w-[var(--page-max)] lg:min-h-[640px] lg:grid-cols-2">
+          <div className="order-2 flex flex-col justify-center px-6 pb-10 pt-4 sm:px-10 sm:py-16 lg:order-1 lg:px-10 lg:py-20">
             <h1 className="text-3xl font-semibold leading-tight tracking-tight text-[#171717] sm:text-4xl lg:text-[2.75rem]">
               下载 CrowVPN 应用程序
             </h1>
@@ -922,8 +922,8 @@ export function DownloadPageContent() {
             </p>
           </div>
 
-          <div className="relative flex min-h-[280px] items-center justify-center overflow-hidden sm:min-h-[360px] lg:min-h-0">
-            <div className="relative z-[2] mx-auto w-full max-w-[min(100%,520px)] px-6 py-8 sm:max-w-[640px] sm:px-10 lg:max-w-[680px] lg:px-8">
+          <div className="order-1 relative flex min-h-[310px] items-center justify-center overflow-hidden sm:min-h-[360px] lg:order-2 lg:min-h-0">
+            <div className="relative z-[2] mx-auto w-[112%] max-w-[620px] px-0 py-6 sm:w-full sm:max-w-[640px] sm:px-10 lg:max-w-[680px] lg:px-8">
               <LocalizedImage
                 zhSrc={HERO_ART}
                 neutralSrc="/images/i18n-neutral/download-banner.png"
@@ -980,8 +980,8 @@ export function DownloadPageContent() {
       </section>
       <section className="bg-[var(--surface-muted)] py-14 sm:py-20">
         <div className="mx-auto max-w-[var(--page-max)] px-6 lg:px-10">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl lg:whitespace-nowrap">
+          <div className="mx-auto max-w-none text-center">
+            <h2 className="text-2xl font-semibold tracking-tight text-[#171717] sm:text-4xl lg:whitespace-nowrap">
               只需 3 个简单的步骤，即可下载并使用 VPN
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[var(--muted)] sm:text-lg">
@@ -1028,7 +1028,7 @@ export function DownloadPageContent() {
                     alt=""
                     fill
                     sizes="(min-width: 1024px) 220px, (min-width: 640px) 220px, 70vw"
-                    className="object-cover"
+                    className="object-contain"
                   />
                 </div>
                 <h3 className="mt-5 text-xl font-semibold text-[#171717]">{item.title}</h3>

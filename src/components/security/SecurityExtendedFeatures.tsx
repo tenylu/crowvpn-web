@@ -110,9 +110,7 @@ export function SecurityExtendedFeatures() {
   return (
     <>
       <section className="border-t border-[var(--border)]/60 bg-[var(--background)] py-16 sm:py-20 lg:py-24">
-        <div className="mx-auto grid max-w-[var(--page-max)] items-center gap-12 px-6 lg:grid-cols-2 lg:gap-x-16 lg:px-10 xl:gap-x-20">
-          <NetworkProtectionVisual />
-
+        <div className="mx-auto grid max-w-[var(--page-max)] items-center gap-8 px-6 lg:grid-cols-2 lg:gap-x-16 lg:px-10 xl:gap-x-20">
           <div className="text-center lg:text-left">
             <FeatureLabel icon={<ShieldOutlineIcon />}>网络保护</FeatureLabel>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl">
@@ -127,6 +125,8 @@ export function SecurityExtendedFeatures() {
               <CheckItem>少无效加载，更轻快。</CheckItem>
             </ul>
           </div>
+
+          <NetworkProtectionVisual />
         </div>
       </section>
 

@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "build": "npx next build",
+    "start": "sh scripts/start-production.sh",
+    "lint": "eslint",
+    "install:deploy": "npm ci --ignore-scripts",
+    "build:deploy": "npm run install:deploy && npm run build"
   },
   "dependencies": {
     "@icon-park/react": "^1.4.2",

@@ -78,8 +78,8 @@ export function SecurityFeatureSections() {
     <section className="border-t border-[var(--border)]/60 bg-[var(--background)] py-16 sm:py-20 lg:py-24">
       <div className="mx-auto max-w-[var(--page-max)] space-y-20 px-6 sm:space-y-24 lg:space-y-28 lg:px-10">
         {/* 图左 · 文右：节点与出口 */}
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-20">
-          <div className="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-20">
+          <div className="order-2 relative mx-auto w-full max-w-xl lg:order-1 lg:mx-0 lg:max-w-none">
             <FeatureBannerFigure
               src={NODE_VISUAL_SRC}
               neutralSrc={NODE_VISUAL_NEUTRAL_SRC}
@@ -87,7 +87,7 @@ export function SecurityFeatureSections() {
             />
           </div>
 
-          <div className="text-center lg:text-left">
+          <div className="order-1 text-center lg:order-2 lg:text-left">
             <FeatureLabel icon={<GlobeIcon />}>全球节点</FeatureLabel>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl">
               轻松切换线路与策略
@@ -104,8 +104,8 @@ export function SecurityFeatureSections() {
         </div>
 
         {/* 文左 · 图右：拦截与更少打扰 */}
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-20">
-          <div className="order-2 text-center lg:order-1 lg:text-left">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-x-16 xl:gap-x-20">
+          <div className="order-1 text-center lg:order-1 lg:text-left">
             <FeatureLabel icon={<ShieldBanIcon />}>DNS 与隐私</FeatureLabel>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl">
               少追踪，浏览更自在
@@ -120,7 +120,7 @@ export function SecurityFeatureSections() {
             </ul>
           </div>
 
-          <div className="relative order-1 mx-auto w-full max-w-xl lg:order-2 lg:mx-0 lg:max-w-none">
+          <div className="relative order-2 mx-auto w-full max-w-xl lg:order-2 lg:mx-0 lg:max-w-none">
             <FeatureBannerFigure
               src={PRIVACY_VISUAL_SRC}
               neutralSrc={PRIVACY_VISUAL_NEUTRAL_SRC}

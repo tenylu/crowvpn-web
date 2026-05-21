@@ -542,8 +542,8 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
       }`}
     >
       <div className="bg-black text-white">
-        <div className="mx-auto flex h-8 w-full max-w-[var(--nav-max)] items-center justify-center px-6 text-xs sm:px-8 lg:px-12 xl:px-16 2xl:px-24">
-          <p className="text-center">
+        <div className="mx-auto flex h-8 w-full max-w-[var(--nav-max)] items-center justify-center px-3 text-[11px] sm:px-8 sm:text-xs lg:px-12 xl:px-16 2xl:px-24">
+          <p className="min-w-0 max-w-full truncate text-center">
             {ipLabel}: {displayIp}
             <span className="mx-3 opacity-70">·</span>
             {ispLabel}: {displayIsp}
@@ -570,7 +570,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
             : undefined
         }
       >
-        <div className="mx-auto flex h-[4.25rem] w-full max-w-[var(--nav-max)] items-center justify-between gap-3 px-6 sm:px-8 lg:px-12 xl:px-16 2xl:px-24">
+        <div className="mx-auto flex h-[4.25rem] w-full max-w-[var(--nav-max)] items-center justify-between gap-2 px-4 sm:gap-3 sm:px-8 lg:px-12 xl:px-16 2xl:px-24">
           <Link
             href="/"
             className="flex min-w-0 shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-[#171717] lg:text-xl"
@@ -597,16 +597,19 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
             <NavAnchor
               href={CROWMESH_USER_LOGIN_URL}
               external
-              className={`${navTriggerClass} hidden shrink-0 sm:inline-flex`}
+              className="hidden shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-[#171717] transition hover:bg-black/[0.04] sm:inline-flex"
             >
               {loginLabel}
             </NavAnchor>
 
-            <Link href="/download" className={`${outlineCtaClass} shrink-0`}>
+            <Link
+              href="/download"
+              className="hidden shrink-0 items-center justify-center rounded-full border border-black bg-transparent px-5 py-2 text-sm font-semibold text-[#171717] shadow-none transition hover:bg-black/[0.04] sm:inline-flex"
+            >
               {getAppLabel}
             </Link>
 
-            <div className="relative flex h-10 shrink-0 items-center rounded-lg border-0 bg-transparent pl-2 pr-8 shadow-none">
+            <div className="relative flex h-10 shrink-0 items-center rounded-lg border-0 bg-transparent pl-1.5 pr-6 shadow-none sm:pl-2 sm:pr-8">
               <span className="flex shrink-0 items-center text-[#171717]" aria-hidden>
                 <GlobeIcon className="opacity-80" />
               </span>
@@ -618,7 +621,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
                 name="lang"
                 value={selectedLanguage}
                 onChange={handleLanguageChange}
-                className="h-full min-w-0 max-w-[7.5rem] cursor-pointer appearance-none border-0 bg-transparent py-0 pl-1.5 pr-1 text-sm font-semibold text-[#171717] outline-none focus:ring-0 sm:max-w-[9rem]"
+                className="h-full min-w-0 max-w-[5.75rem] cursor-pointer appearance-none border-0 bg-transparent py-0 pl-1 pr-1 text-sm font-semibold text-[#171717] outline-none focus:ring-0 sm:max-w-[9rem] sm:pl-1.5"
               >
                 {localeOptions.map((language) => (
                   <option key={language.value} value={language.value}>

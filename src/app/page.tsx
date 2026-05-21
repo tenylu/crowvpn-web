@@ -44,12 +44,12 @@ const steps = [
 
 function HeroBannerImage() {
   return (
-    <div className="pointer-events-none relative mx-auto h-full min-h-[200px] w-full max-w-lg lg:max-w-none">
+    <div className="pointer-events-none relative mx-auto h-full min-h-[320px] w-[118%] max-w-[560px] -translate-x-[3%] sm:w-full sm:max-w-lg sm:translate-x-0 lg:max-w-none">
       <Image
         src={HERO_BANNER_SRC}
         alt="CrowVPN 产品配图"
         fill
-        className="object-contain object-center lg:object-right-bottom"
+        className="scale-[1.32] object-contain object-center sm:scale-100 lg:object-right-bottom"
         sizes="(max-width: 1024px) 100vw, 50vw"
         priority
       />
@@ -62,33 +62,33 @@ export default function Home() {
     <DestinationPickerProvider>
     <div className="flex min-h-full flex-1 flex-col bg-[var(--background)]">
       <section
-        className="relative h-[764px] overflow-x-clip"
+        className="relative min-h-[680px] overflow-x-clip sm:h-[764px]"
         style={{
           background: "linear-gradient(180deg, #9ECEF1 0%, #E9F2FF 100%)",
         }}
       >
         <SiteHeader />
-        <div className="mx-auto flex h-full w-full max-w-[var(--page-max)] flex-col gap-8 px-6 pb-10 pt-20 sm:pt-24 lg:flex-row lg:items-stretch lg:gap-10 lg:px-10 lg:pt-28">
-          <div className="relative z-30 flex max-w-xl shrink-0 flex-col justify-center lg:w-[46%] lg:max-w-none">
-            <h1 className="text-4xl font-semibold leading-[1.15] tracking-tight text-[#171717] sm:text-5xl sm:leading-[1.1]">
+        <div className="mx-auto flex h-full w-full max-w-[var(--page-max)] flex-col gap-3 px-6 pb-10 pt-24 sm:gap-8 sm:pt-24 lg:flex-row lg:items-stretch lg:gap-10 lg:px-10 lg:pt-28">
+          <div className="order-2 relative z-30 flex max-w-xl shrink-0 flex-col justify-center lg:order-1 lg:w-[46%] lg:max-w-none">
+            <h1 className="text-3xl font-semibold leading-[1.15] tracking-tight text-[#171717] sm:text-5xl sm:leading-[1.1]">
               经济实惠，适合国际旅行的网络服务
             </h1>
             <p className="mt-4 text-lg text-[var(--muted)] sm:text-xl">您需要在连接到哪里去？</p>
             <HeroSearchBar />
           </div>
-          <div className="relative min-h-[240px] flex-1 lg:min-h-0">
+          <div className="order-1 relative min-h-[330px] flex-1 lg:order-2 lg:min-h-0">
             <HeroBannerImage />
           </div>
         </div>
       </section>
 
-      <div className="relative z-10 mx-auto -mt-10 w-full max-w-[var(--page-max)] px-6 sm:-mt-14 lg:px-10">
-        <div className="flex flex-col gap-6 rounded-full border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[var(--shadow-card)] sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:p-8">
+      <div className="relative z-10 mx-auto mt-6 w-full max-w-[var(--page-max)] px-6 sm:-mt-14 lg:px-10">
+        <div className="flex flex-col gap-5 rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)] sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:rounded-full sm:p-8">
           <p className="text-center text-base font-semibold text-[#171717] sm:text-left sm:text-lg">
             他们都在使用
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-4 sm:justify-end">
-            <BrandLogoStrip imageClassName="h-8 w-auto object-contain" />
+          <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-4 sm:justify-end sm:gap-x-12">
+            <BrandLogoStrip imageClassName="h-7 w-auto object-contain sm:h-8" />
           </div>
         </div>
       </div>
@@ -125,11 +125,11 @@ export default function Home() {
             <p className="text-sm font-medium text-[#8b8f96]">如何使用 CrowVPN 服务</p>
             <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl">CrowVPN 的工作原理？</h2>
             <p className="mt-4 text-base text-[var(--muted)]">只需三步，即可完成配置并保持在线安全。</p>
-            <ol className="mt-10 grid gap-6 lg:grid-cols-3">
+            <ol className="mt-10 grid gap-5 lg:grid-cols-3 lg:gap-6">
               {steps.map((s, i) => (
                 <li
                   key={s.title}
-                  className="rounded-[24px] border border-[var(--border)] bg-[#EEF1F5] p-6"
+                  className="rounded-[24px] border border-[var(--border)] bg-[#EEF1F5] p-5 sm:p-6"
                 >
                   <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-sm font-semibold text-[#171717]">
                     {i + 1}
