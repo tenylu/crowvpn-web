@@ -410,10 +410,13 @@ type SiteHeaderProps = {
 };
 
 const PROTECTED_ISP_KEYWORDS = [
+  "crowvpn",
+  "crowmesh",
   "dmit",
   "vultr",
   "it7 networks",
   "it7",
+  "xnnet",
   "overland storage",
   "overland",
   "akile",
@@ -482,11 +485,11 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
       let nextIsp: string | null = null;
 
       try {
-        const data = await fetchJsonWithTimeout<{ ip?: string | null; isp?: string | null }>("/api/network-info");
+        const data = await fetchJsonWithTimeout<{ ip?: string; org?: string }>("https://ipinfo.io/json", 3500);
         nextIp = data.ip || null;
-        nextIsp = data.isp || null;
+        nextIsp = cleanIsp(data.org);
       } catch {
-        // Fall back to browser-side providers below.
+        // Try more browser-side providers below.
       }
 
       if (!nextIp) {
@@ -500,26 +503,34 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
 
       if (!nextIsp) {
         try {
-          const data = await fetchJsonWithTimeout<{ ip?: string; org?: string }>("https://ipinfo.io/json", 3500);
-          nextIp = nextIp || data.ip || null;
-          nextIsp = cleanIsp(data.org);
+          const data = await fetchJsonWithTimeout<{ org?: string; asn?: string }>("https://ipapi.co/json/", 3500);
+          nextIsp = [cleanIsp(data.org), data.asn].filter(Boolean).join(" ") || null;
         } catch {
-          try {
-            const data = await fetchJsonWithTimeout<{ org?: string; asn?: string }>("https://ipapi.co/json/", 3500);
-            nextIsp = [cleanIsp(data.org), data.asn].filter(Boolean).join(" ") || null;
-          } catch {
-            try {
-              const data = await fetchJsonWithTimeout<{
-                ip?: string;
-                connection?: { isp?: string; org?: string; asn?: string };
-              }>("https://ipwho.is/", 3500);
-              nextIp = nextIp || data.ip || null;
-              nextIsp =
-                [data.connection?.isp, data.connection?.org, data.connection?.asn].filter(Boolean).join(" ") || null;
-            } catch {
-              // Keep unknown when all providers fail.
-            }
-          }
+          // Try the next provider below.
+        }
+      }
+
+      if (!nextIsp) {
+        try {
+          const data = await fetchJsonWithTimeout<{
+            ip?: string;
+            connection?: { isp?: string; org?: string; asn?: string };
+          }>("https://ipwho.is/", 3500);
+          nextIp = nextIp || data.ip || null;
+          nextIsp =
+            [data.connection?.isp, data.connection?.org, data.connection?.asn].filter(Boolean).join(" ") || null;
+        } catch {
+          // Try the server-side fallback below.
+        }
+      }
+
+      if (!nextIp || !nextIsp) {
+        try {
+          const data = await fetchJsonWithTimeout<{ ip?: string | null; isp?: string | null }>("/api/network-info");
+          nextIp = nextIp || data.ip || null;
+          nextIsp = nextIsp || data.isp || null;
+        } catch {
+          // Keep unknown when all providers fail.
         }
       }
 
@@ -547,7 +558,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
 
   const normalizedIsp = isp.toLowerCase().replace(/[^\w\s.-]/g, " ");
   const isProtected = PROTECTED_ISP_KEYWORDS.some((keyword) => normalizedIsp.includes(keyword));
-  const displayedIsp = isProtected ? "CrowMesh" : isp;
+  const displayedIsp = isProtected ? "CrowVPN" : isp;
   const displayIp = ip === "未知" || ip === "获取中..." ? getMessage(selectedLanguage, ip) : ip;
   const displayIsp =
     displayedIsp === "未知" || displayedIsp === "获取中..." ? getMessage(selectedLanguage, displayedIsp) : displayedIsp;
