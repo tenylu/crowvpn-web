@@ -6,7 +6,7 @@ import { LocalizedImage } from "@/components/LocalizedImage";
 import { usePricingLocale } from "@/hooks/usePricingLocale";
 import {
   billingToggleOptions,
-  crowmeshBuyWithLoginUrl,
+  crowmeshBuyUrl,
   featureCategories,
   formatPeriodNote,
   monthlyEquivalentCny,
@@ -163,7 +163,7 @@ function PlanCard({ period, plan, formatPrice, priceLoading }: PlanCardProps) {
   const monthlyCny = monthlyEquivalentCny(totalCny, period);
   const monthlyPrice = formatPrice(monthlyCny);
   const savePct = savingsPercent(plan, period);
-  const checkoutUrl = crowmeshBuyWithLoginUrl(plan.checkoutPlanId, period);
+  const checkoutUrl = crowmeshBuyUrl(plan.checkoutPlanId, period);
 
   const cardContent = (
     <>
@@ -298,7 +298,7 @@ export function PricingPageContent() {
   const priceLoading = status === "loading";
 
   const planColumnCount = pricingPlans.length + 1;
-  const featuredCheckoutUrl = crowmeshBuyWithLoginUrl(
+  const featuredCheckoutUrl = crowmeshBuyUrl(
     pricingPlans.find((plan) => "popular" in plan && plan.popular)?.checkoutPlanId ?? pricingPlans[0].checkoutPlanId,
     period,
   );
@@ -366,7 +366,7 @@ export function PricingPageContent() {
                           <span className="text-xs font-normal text-[#5c5c5c] sm:text-sm"> /月</span>
                         </p>
                         <a
-                          href={crowmeshBuyWithLoginUrl(plan.checkoutPlanId, period)}
+                          href={crowmeshBuyUrl(plan.checkoutPlanId, period)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className={`mt-3 inline-flex w-full items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition ${

@@ -335,6 +335,10 @@ export function crowmeshBuyPath(planId: number, period: BillingPeriod): string {
   return `/subscription/balance/${planId}?period=${checkoutPeriodByBillingPeriod[period]}`;
 }
 
+export function crowmeshBuyUrl(planId: number, period: BillingPeriod): string {
+  return `${CROWMESH_USER_BASE_URL}${crowmeshBuyPath(planId, period)}`;
+}
+
 export function crowmeshBuyWithLoginUrl(planId: number, period: BillingPeriod): string {
   return `${CROWMESH_USER_BASE_URL}/user/login?redirect=${encodeURIComponent(crowmeshBuyPath(planId, period))}`;
 }
