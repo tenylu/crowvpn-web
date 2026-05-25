@@ -321,8 +321,6 @@ export const whyChooseItems = [
   },
 ] as const;
 
-export const CROWMESH_USER_BASE_URL = "https://user.crowmesh.com";
-
 export const checkoutPeriodByBillingPeriod: Record<BillingPeriod, CrowmeshCheckoutPeriod> = {
   "1": "month",
   "3": "quarter",
@@ -336,9 +334,9 @@ export function crowmeshBuyPath(planId: number, period: BillingPeriod): string {
 }
 
 export function crowmeshBuyUrl(planId: number, period: BillingPeriod): string {
-  return `${CROWMESH_USER_BASE_URL}${crowmeshBuyPath(planId, period)}`;
+  return `/go/buy?planId=${planId}&period=${checkoutPeriodByBillingPeriod[period]}`;
 }
 
 export function crowmeshBuyWithLoginUrl(planId: number, period: BillingPeriod): string {
-  return `${CROWMESH_USER_BASE_URL}/user/login?redirect=${encodeURIComponent(crowmeshBuyPath(planId, period))}`;
+  return `/go/login?redirect=${encodeURIComponent(crowmeshBuyPath(planId, period))}`;
 }

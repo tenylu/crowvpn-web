@@ -274,7 +274,17 @@ function NavAnchor({
   );
 }
 
-function DesktopNavItem({ item }: { item: NavItem }) {
+function translateNavText(locale: LocaleCode, source: string) {
+  const translated = getMessage(locale, source);
+  if (locale !== "zh-CN" && locale !== "zh-HK" && translated === source) {
+    return getMessage("en", source);
+  }
+  return translated;
+}
+
+function DesktopNavItem({ item, locale }: { item: NavItem; locale: LocaleCode }) {
+  const translate = (source: string) => translateNavText(locale, source);
+
   if ("children" in item) {
     const groups = groupNavChildren(item.children);
     const hasCategories = groups.some((group) => group.category);
@@ -282,7 +292,7 @@ function DesktopNavItem({ item }: { item: NavItem }) {
     return (
       <div className="group relative">
         <button type="button" className={navTriggerClass} aria-haspopup="true" aria-expanded="false">
-          {item.label}
+          {translate(item.label)}
           <ChevronDown className="opacity-50" />
         </button>
         <div
@@ -298,7 +308,9 @@ function DesktopNavItem({ item }: { item: NavItem }) {
               {groups.map((group) => (
                 <div key={group.category || item.label}>
                   {group.category ? (
-                    <p className="mb-1.5 px-2 text-xs font-semibold text-[#8b8f96]">{group.category}</p>
+                    <p className="mb-1.5 px-2 text-xs font-semibold text-[#8b8f96]">
+                      {translate(group.category)}
+                    </p>
                   ) : null}
                   <div className="space-y-1">
                     {group.links.map((child) => (
@@ -308,10 +320,10 @@ function DesktopNavItem({ item }: { item: NavItem }) {
                         external={child.external}
                         className="block rounded-lg px-2.5 py-2 text-sm transition hover:bg-black/[0.04]"
                       >
-                        <span className="block font-semibold text-[#171717]">{child.label}</span>
+                        <span className="block font-semibold text-[#171717]">{translate(child.label)}</span>
                         {child.description ? (
                           <span className="mt-0.5 block text-xs leading-relaxed text-[var(--muted)]">
-                            {child.description}
+                            {translate(child.description)}
                           </span>
                         ) : null}
                       </NavAnchor>
@@ -328,7 +340,7 @@ function DesktopNavItem({ item }: { item: NavItem }) {
                 external={child.external}
                 className={dropdownLinkClass}
               >
-                {child.label}
+                {translate(child.label)}
               </NavAnchor>
             ))
           )}
@@ -339,24 +351,30 @@ function DesktopNavItem({ item }: { item: NavItem }) {
 
   return (
     <NavAnchor href={item.href} external={item.external} className={navTriggerClass}>
-      {item.label}
+      {translate(item.label)}
     </NavAnchor>
   );
 }
 
-function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () => void }) {
+function MobileNavItem({ item, locale, onNavigate }: { item: NavItem; locale: LocaleCode; onNavigate?: () => void }) {
+  const translate = (source: string) => translateNavText(locale, source);
+
   if ("children" in item) {
     const groups = groupNavChildren(item.children);
     const hasCategories = groups.some((group) => group.category);
 
     return (
       <div className="border-b border-[var(--border)] last:border-b-0">
-        <p className="px-4 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-[#8b8f96]">{item.label}</p>
+        <p className="px-4 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-[#8b8f96]">
+          {translate(item.label)}
+        </p>
         {hasCategories
           ? groups.map((group) => (
               <div key={group.category || item.label} className="pb-2">
                 {group.category ? (
-                  <p className="px-4 pb-1 pt-2 text-[11px] font-semibold text-[#8b8f96]">{group.category}</p>
+                  <p className="px-4 pb-1 pt-2 text-[11px] font-semibold text-[#8b8f96]">
+                    {translate(group.category)}
+                  </p>
                 ) : null}
                 {group.links.map((child) => (
                   <NavAnchor
@@ -366,7 +384,7 @@ function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () =>
                     className="block px-4 py-2 text-sm font-semibold text-[#171717] hover:bg-black/[0.04]"
                     onClick={onNavigate}
                   >
-                    {child.label}
+                    {translate(child.label)}
                   </NavAnchor>
                 ))}
               </div>
@@ -379,7 +397,7 @@ function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () =>
                 className="block px-4 py-2.5 text-sm font-semibold text-[#171717] hover:bg-black/[0.04]"
                 onClick={onNavigate}
               >
-                {child.label}
+                {translate(child.label)}
               </NavAnchor>
             ))}
       </div>
@@ -393,7 +411,7 @@ function MobileNavItem({ item, onNavigate }: { item: NavItem; onNavigate?: () =>
       className="block border-b border-[var(--border)] px-4 py-3 text-sm font-semibold text-[#171717] hover:bg-black/[0.04] last:border-b-0"
       onClick={onNavigate}
     >
-      {item.label}
+      {translate(item.label)}
     </NavAnchor>
   );
 }
@@ -639,7 +657,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
           <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2 md:gap-3">
             <nav className="hidden items-center gap-0.5 md:flex" aria-label="主导航">
               {navItems.map((item) => (
-                <DesktopNavItem key={item.label} item={item} />
+                <DesktopNavItem key={item.label} item={item} locale={selectedLanguage} />
               ))}
             </nav>
 
@@ -705,7 +723,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
                   {getAppLabel}
                 </NavAnchor>
                 {navItems.map((item) => (
-                  <MobileNavItem key={item.label} item={item} />
+                  <MobileNavItem key={item.label} item={item} locale={selectedLanguage} />
                 ))}
               </div>
             </details>

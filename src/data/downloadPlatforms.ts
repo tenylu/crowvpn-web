@@ -2,7 +2,7 @@
 export const CROWVPN_CLIENT_HOME = "https://crowvpn.com";
 
 /** 用户中心登录（与结账 redirect 同源） */
-export const CROWMESH_USER_LOGIN_URL = "https://user.crowmesh.com/user/login";
+export const CROWMESH_USER_LOGIN_URL = "/go/login";
 
 export const DOWNLOAD_PLATFORMS_SECTION_ID = "download-platforms";
 
