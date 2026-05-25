@@ -11,7 +11,11 @@ import {
   downloadItems,
   type DownloadItem,
 } from "@/data/downloadPlatforms";
-import { buildLatestDownloadLinks, type LatestDownloadLinks } from "@/lib/downloads/latest";
+import {
+  ANDROID_LATEST_DOWNLOAD_PATH,
+  buildLatestDownloadLinks,
+  type LatestDownloadLinks,
+} from "@/lib/downloads/latest";
 
 const HERO_ART = "/images/download-banner.png";
 const FALLBACK_DOWNLOAD_LINKS = buildLatestDownloadLinks("2.2.0");
@@ -677,10 +681,12 @@ export function LinuxDownloadDialog({
 
 export function AndroidDownloadDialog({
   href,
+  shareHref = getAbsoluteHref(href),
   open,
   onClose,
 }: {
   href: string;
+  shareHref?: string;
   open: boolean;
   onClose: () => void;
 }) {
@@ -748,15 +754,15 @@ export function AndroidDownloadDialog({
 
         <div className="grid gap-6 px-6 pb-6 pt-6 sm:grid-cols-[220px_minmax(0,1fr)] sm:px-8 sm:pb-8">
           <div className="flex items-center justify-center rounded-2xl border border-[var(--border)] bg-white p-4 shadow-[var(--shadow-card)]">
-            <AndroidQrMark href={href} />
+            <AndroidQrMark href={shareHref} />
           </div>
           <div className="flex flex-col justify-center">
             <p className="text-lg font-semibold text-[#171717]">扫码下载</p>
             <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
-              建议使用手机浏览器扫码打开下载页。若当前就在 Android 手机上，可直接点击下方按钮下载。
+              建议使用手机浏览器扫码打开下载页。二维码与地址固定不变，会自动判断 Android 最新版本。
             </p>
             <a
-              href={href}
+              href={shareHref}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[var(--accent-primary)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-primary-hover)] sm:w-auto"
@@ -768,6 +774,11 @@ export function AndroidDownloadDialog({
       </div>
     </div>
   );
+}
+
+function getAbsoluteHref(href: string) {
+  if (typeof window === "undefined") return href;
+  return new URL(href, window.location.origin).href;
 }
 
 function AndroidQrMark({ href }: { href: string }) {
@@ -792,11 +803,11 @@ export function DownloadPageContent() {
   const [linuxDialogOpen, setLinuxDialogOpen] = useState(false);
   const [androidDialogOpen, setAndroidDialogOpen] = useState(false);
   const [latestDownloadLinks, setLatestDownloadLinks] = useState<LatestDownloadLinks>(FALLBACK_DOWNLOAD_LINKS);
+  const androidDownloadHref = ANDROID_LATEST_DOWNLOAD_PATH;
   const [heroDownloadAction, setHeroDownloadAction] = useState<HeroDownloadAction>({
     label: "下载应用程序",
     href: `#${DOWNLOAD_PLATFORMS_SECTION_ID}`,
   });
-  const androidDownloadHref = latestDownloadLinks.androidApk;
 
   useEffect(() => {
     let cancelled = false;

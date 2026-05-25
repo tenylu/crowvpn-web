@@ -4,6 +4,8 @@ const ANDROID_DOWNLOAD_BASE_URL = `${DOWNLOAD_BASE_URL}/android`;
 const ANDROID_VERSION_JSON_URL = `${ANDROID_DOWNLOAD_BASE_URL}/version.json`;
 const FALLBACK_ANDROID_APK_URL = `${ANDROID_DOWNLOAD_BASE_URL}/crowvpn-1.1.apk`;
 
+export const ANDROID_LATEST_DOWNLOAD_PATH = "/download/android";
+
 export type LatestDownloadLinks = {
   version: string;
   macApple: string;
@@ -21,13 +23,40 @@ export type LatestDownloadLinks = {
 type AndroidVersionManifest = {
   version?: unknown;
   file?: unknown;
+  url?: unknown;
+  apk_url?: unknown;
+  download_url?: unknown;
 };
 
-function buildAndroidDownloadUrl(manifest: AndroidVersionManifest): string {
-  if (typeof manifest.file === "string" && manifest.file.trim()) {
-    const file = manifest.file.trim();
-    return file.startsWith("http") ? file : `${ANDROID_DOWNLOAD_BASE_URL}/${file}`;
+async function fetchWithTimeout(url: string, timeoutMs = 3500) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(url, {
+      next: { revalidate: 300 },
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timer);
   }
+}
+
+function normalizeAndroidFileUrl(value: unknown): string | null {
+  if (typeof value !== "string" || !value.trim()) return null;
+
+  const file = value.trim();
+  return file.startsWith("http") ? file : `${ANDROID_DOWNLOAD_BASE_URL}/${file.replace(/^\/+/, "")}`;
+}
+
+function buildAndroidDownloadUrl(manifest: AndroidVersionManifest): string {
+  const explicitUrl =
+    normalizeAndroidFileUrl(manifest.download_url) ??
+    normalizeAndroidFileUrl(manifest.apk_url) ??
+    normalizeAndroidFileUrl(manifest.url) ??
+    normalizeAndroidFileUrl(manifest.file);
+
+  if (explicitUrl) return explicitUrl;
 
   if (typeof manifest.version === "string" && manifest.version.trim()) {
     return `${ANDROID_DOWNLOAD_BASE_URL}/crowvpn-${manifest.version.trim()}.apk`;
@@ -57,23 +86,15 @@ export function buildLatestDownloadLinks(version: string, androidManifest: Andro
 
 export async function fetchLatestDownloadLinks(): Promise<LatestDownloadLinks> {
   const [desktopResponse, androidResponse] = await Promise.all([
-    fetch(LATEST_YML_URL, {
-      next: { revalidate: 300 },
-    }),
-    fetch(ANDROID_VERSION_JSON_URL, {
-      next: { revalidate: 300 },
-    }).catch(() => null),
+    fetchWithTimeout(LATEST_YML_URL).catch(() => null),
+    fetchWithTimeout(ANDROID_VERSION_JSON_URL).catch(() => null),
   ]);
 
-  if (!desktopResponse.ok) {
-    throw new Error(`latest.yml request failed: ${desktopResponse.status}`);
-  }
+  let version = "2.2.0";
 
-  const yaml = await desktopResponse.text();
-  const version = yaml.match(/^version:\s*([^\s]+)\s*$/m)?.[1];
-
-  if (!version) {
-    throw new Error("latest.yml is missing version");
+  if (desktopResponse?.ok) {
+    const yaml = await desktopResponse.text();
+    version = yaml.match(/^version:\s*([^\s]+)\s*$/m)?.[1] ?? version;
   }
 
   let androidManifest: AndroidVersionManifest = {};

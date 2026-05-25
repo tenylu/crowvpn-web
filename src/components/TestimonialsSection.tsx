@@ -131,7 +131,7 @@ const MASONRY_SEQUENCE: Array<{
 ];
 
 function MasonryCard({ entry, reviews }: { entry: (typeof MASONRY_SEQUENCE)[number]; reviews: ReviewItem[] }) {
-  const item = reviews[entry.index % reviews.length]!;
+  const item = reviews[entry.index]!;
   const shell = entry.shellClass;
 
   switch (entry.kind) {
@@ -160,6 +160,7 @@ function MasonryCard({ entry, reviews }: { entry: (typeof MASONRY_SEQUENCE)[numb
 export function TestimonialsSection() {
   const locale = useLocaleCode();
   const { reviews } = getTrustPack(locale);
+  const masonryEntries = MASONRY_SEQUENCE.filter((entry) => entry.index < reviews.length);
 
   return (
     <section id="testimonials" className="scroll-mt-24 bg-[#f3f7fa] py-16 sm:py-20">
@@ -172,8 +173,8 @@ export function TestimonialsSection() {
         </p>
 
         <div className="mt-12 columns-1 [column-gap:1.5rem] md:columns-2 lg:columns-4" data-no-translate>
-          {MASONRY_SEQUENCE.map((entry, i) => (
-            <MasonryCard key={`${reviews[entry.index % reviews.length]!.name}-${i}`} entry={entry} reviews={reviews} />
+          {masonryEntries.map((entry, i) => (
+            <MasonryCard key={`${reviews[entry.index]!.name}-${i}`} entry={entry} reviews={reviews} />
           ))}
         </div>
       </div>

@@ -89,6 +89,34 @@ const zhCnPack: TrustPack = {
       quote:
         "做用户访谈会刷 Instagram、Reddit 上的车友讨论，在国内时经常断断续续。用 CrowVPN 后信息流刷新正常多了。",
     },
+    {
+      brand: "xiaomi",
+      name: "Tom Zhao",
+      orgLine: "Xiaomi · Supply Chain",
+      quote:
+        "日韩供应商的门户和邮件里常夹带 Google Drive、Dropbox 链接，在国内点开总卡住。现在先连 CrowVPN 再处理工单，查图纸和物流单据顺畅很多。",
+    },
+    {
+      brand: "wechat",
+      name: "Jamie Liu",
+      orgLine: "WeChat · Marketing",
+      quote:
+        "市场活动需要和海外 KOL 的帖子、评论区、时差日程及时对齐。CrowVPN 让社交平台和广告后台不断线，跟海外同事接力也不用再单独解释访问问题。",
+    },
+    {
+      brand: "li-auto",
+      name: "Lucy Sun",
+      orgLine: "Li Auto · Corporate Travel",
+      quote:
+        "帮外籍同事安排来华短期出差，除了机酒还要管常用软件能不能正常工作。CrowVPN 装好后，他们常用的地图、社交和新闻客户端基本都能照旧用。",
+    },
+    {
+      brand: "dji",
+      name: "Jordan Wang",
+      orgLine: "DJI · Field Service",
+      quote:
+        "外场排障时要对照海外论坛和 YouTube 上的拆解视频，以前经常加载不出来。CrowVPN 在弱网下重连也快，至少查国外资料和社区方案不用再看半屏空白。",
+    },
   ],
 };
 
@@ -110,6 +138,10 @@ const trustPacks = {
       { brand: "microsoft", name: "Daniel Brooks", orgLine: "Microsoft · Cloud", quote: "Cross-region collaboration is less fragile now. I can join meetings, review docs, and keep support channels open from airports and client sites." },
       { brand: "google", name: "Maya Patel", orgLine: "Google · Research", quote: "I use CrowVPN when I need consistent access to research references and global services. The connection feels predictable enough for everyday work." },
       { brand: "amazon", name: "Chris Miller", orgLine: "Amazon · Logistics", quote: "Vendor portals and regional dashboards load more consistently on the road, which saves time when schedules are already tight." },
+      { brand: "netflix", name: "Olivia Reed", orgLine: "Netflix · Content Ops", quote: "Review links, regional previews, and partner tools are much easier to check when I am away from the office. CrowVPN keeps the workflow calm." },
+      { brand: "tesla", name: "Ethan Walker", orgLine: "Tesla · Field Service", quote: "On service trips, I often move between mobile hotspots, hotels, and workshop Wi‑Fi. CrowVPN reconnects quickly and keeps the resources I need within reach." },
+      { brand: "meta", name: "Sophia Nguyen", orgLine: "Meta · Community", quote: "Social dashboards and moderation queues are less frustrating on unfamiliar networks. I can stay in sync with the team without losing half the day to connection issues." },
+      { brand: "microsoft", name: "Noah Bennett", orgLine: "Microsoft · Customer Success", quote: "For customer sessions across time zones, the biggest win is predictability. CrowVPN helps calls, documents, and shared workspaces stay available." },
     ],
   },
   cs: {

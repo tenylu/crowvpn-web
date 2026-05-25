@@ -10,7 +10,11 @@ import {
   WindowsDownloadDialog,
 } from "@/components/DownloadPageContent";
 import { downloadItems } from "@/data/downloadPlatforms";
-import { buildLatestDownloadLinks, type LatestDownloadLinks } from "@/lib/downloads/latest";
+import {
+  ANDROID_LATEST_DOWNLOAD_PATH,
+  buildLatestDownloadLinks,
+  type LatestDownloadLinks,
+} from "@/lib/downloads/latest";
 
 const FALLBACK_DOWNLOAD_LINKS = buildLatestDownloadLinks("2.2.0");
 
@@ -21,7 +25,7 @@ export function DownloadSection() {
   const [linuxDialogOpen, setLinuxDialogOpen] = useState(false);
   const [androidDialogOpen, setAndroidDialogOpen] = useState(false);
   const downloadPlatforms = downloadItems.slice(0, 4).filter((item) => item.src);
-  const androidDownloadHref = latestDownloadLinks.androidApk;
+  const androidDownloadHref = ANDROID_LATEST_DOWNLOAD_PATH;
 
   useEffect(() => {
     let cancelled = false;
