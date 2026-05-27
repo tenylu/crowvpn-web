@@ -16,7 +16,7 @@ import {
   type LatestDownloadLinks,
 } from "@/lib/downloads/latest";
 
-const FALLBACK_DOWNLOAD_LINKS = buildLatestDownloadLinks("2.2.0");
+const FALLBACK_DOWNLOAD_LINKS = buildLatestDownloadLinks("2.2.2");
 
 export function DownloadSection() {
   const [latestDownloadLinks, setLatestDownloadLinks] = useState<LatestDownloadLinks>(FALLBACK_DOWNLOAD_LINKS);
@@ -32,7 +32,7 @@ export function DownloadSection() {
 
     async function loadLatestDownloadLinks() {
       try {
-        const response = await fetch("/api/downloads/latest");
+        const response = await fetch("/api/downloads/latest", { cache: "no-store" });
         if (!response.ok) return;
         const links = (await response.json()) as LatestDownloadLinks;
         if (!cancelled) setLatestDownloadLinks(links);
@@ -48,8 +48,10 @@ export function DownloadSection() {
   }, []);
 
   function handleAndroidDownload() {
+    const target = latestDownloadLinks.androidApk || androidDownloadHref;
+
     if (window.matchMedia("(max-width: 639px)").matches) {
-      window.location.assign(androidDownloadHref);
+      window.location.assign(target);
       return;
     }
 
@@ -132,6 +134,8 @@ export function DownloadSection() {
       />
       <AndroidDownloadDialog
         href={androidDownloadHref}
+        apkUrl={latestDownloadLinks.androidApk}
+        androidVersion={latestDownloadLinks.androidVersion}
         open={androidDialogOpen}
         onClose={() => setAndroidDialogOpen(false)}
       />

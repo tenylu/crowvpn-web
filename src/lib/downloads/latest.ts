@@ -2,7 +2,8 @@ const DOWNLOAD_BASE_URL = "https://cloud.crowmesh.com";
 const LATEST_YML_URL = `${DOWNLOAD_BASE_URL}/latest.yml`;
 const ANDROID_DOWNLOAD_BASE_URL = `${DOWNLOAD_BASE_URL}/android`;
 const ANDROID_VERSION_JSON_URL = `${ANDROID_DOWNLOAD_BASE_URL}/version.json`;
-const FALLBACK_ANDROID_APK_URL = `${ANDROID_DOWNLOAD_BASE_URL}/crowvpn-1.1.apk`;
+const FALLBACK_ANDROID_APK_URL = `${ANDROID_DOWNLOAD_BASE_URL}/crowvpn-2.0.apk`;
+const FALLBACK_ANDROID_VERSION = "2.0";
 
 export const ANDROID_LATEST_DOWNLOAD_PATH = "/download/android";
 
@@ -22,24 +23,43 @@ export type LatestDownloadLinks = {
 
 type AndroidVersionManifest = {
   version?: unknown;
+  build_time?: unknown;
   file?: unknown;
+  body?: unknown;
   url?: unknown;
   apk_url?: unknown;
   download_url?: unknown;
+  apk?: unknown;
+  apkFile?: unknown;
+  package_url?: unknown;
 };
 
-async function fetchWithTimeout(url: string, timeoutMs = 3500) {
+async function fetchRemote(url: string, timeoutMs = 8000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     return await fetch(url, {
-      next: { revalidate: 300 },
+      cache: "no-store",
       signal: controller.signal,
+      headers: {
+        Accept: "application/json, text/yaml, text/plain, */*",
+      },
     });
   } finally {
     clearTimeout(timer);
   }
+}
+
+function parseAndroidManifest(raw: unknown): AndroidVersionManifest {
+  if (!raw || typeof raw !== "object") return {};
+
+  const record = raw as Record<string, unknown>;
+  if (record.data && typeof record.data === "object") {
+    return record.data as AndroidVersionManifest;
+  }
+
+  return record as AndroidVersionManifest;
 }
 
 function normalizeAndroidFileUrl(value: unknown): string | null {
@@ -49,14 +69,48 @@ function normalizeAndroidFileUrl(value: unknown): string | null {
   return file.startsWith("http") ? file : `${ANDROID_DOWNLOAD_BASE_URL}/${file.replace(/^\/+/, "")}`;
 }
 
-function buildAndroidDownloadUrl(manifest: AndroidVersionManifest): string {
+function pickAndroidFileName(manifest: AndroidVersionManifest): string | null {
+  const candidates = [manifest.file, manifest.apk, manifest.apkFile];
+  for (const candidate of candidates) {
+    if (typeof candidate !== "string" || !candidate.trim()) continue;
+    const name = candidate.trim();
+    if (name.endsWith(".apk")) return name.replace(/^\/+/, "");
+  }
+  return null;
+}
+
+async function verifyApkExists(url: string): Promise<boolean> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    const response = await fetch(url, {
+      method: "HEAD",
+      cache: "no-store",
+      signal: controller.signal,
+    });
+    return response.ok;
+  } catch {
+    return false;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+export function buildAndroidDownloadUrl(manifest: AndroidVersionManifest): string {
   const explicitUrl =
     normalizeAndroidFileUrl(manifest.download_url) ??
     normalizeAndroidFileUrl(manifest.apk_url) ??
     normalizeAndroidFileUrl(manifest.url) ??
-    normalizeAndroidFileUrl(manifest.file);
+    normalizeAndroidFileUrl(manifest.package_url) ??
+    normalizeAndroidFileUrl(manifest.file) ??
+    normalizeAndroidFileUrl(manifest.apk) ??
+    normalizeAndroidFileUrl(manifest.apkFile);
 
   if (explicitUrl) return explicitUrl;
+
+  const fileName = pickAndroidFileName(manifest);
+  if (fileName) return `${ANDROID_DOWNLOAD_BASE_URL}/${fileName}`;
 
   if (typeof manifest.version === "string" && manifest.version.trim()) {
     return `${ANDROID_DOWNLOAD_BASE_URL}/crowvpn-${manifest.version.trim()}.apk`;
@@ -65,7 +119,32 @@ function buildAndroidDownloadUrl(manifest: AndroidVersionManifest): string {
   return FALLBACK_ANDROID_APK_URL;
 }
 
-export function buildLatestDownloadLinks(version: string, androidManifest: AndroidVersionManifest = {}): LatestDownloadLinks {
+export async function resolveAndroidDownloadUrl(manifest: AndroidVersionManifest): Promise<string> {
+  const primary = buildAndroidDownloadUrl(manifest);
+  if (await verifyApkExists(primary)) return primary;
+
+  if (typeof manifest.version === "string" && manifest.version.trim()) {
+    const byVersion = `${ANDROID_DOWNLOAD_BASE_URL}/crowvpn-${manifest.version.trim()}.apk`;
+    if (byVersion !== primary && (await verifyApkExists(byVersion))) return byVersion;
+  }
+
+  if (primary !== FALLBACK_ANDROID_APK_URL && (await verifyApkExists(FALLBACK_ANDROID_APK_URL))) {
+    return FALLBACK_ANDROID_APK_URL;
+  }
+
+  return primary;
+}
+
+export function buildLatestDownloadLinks(
+  version: string,
+  androidManifest: AndroidVersionManifest = {},
+  androidApk = buildAndroidDownloadUrl(androidManifest),
+): LatestDownloadLinks {
+  const androidVersion =
+    typeof androidManifest.version === "string" && androidManifest.version.trim()
+      ? androidManifest.version.trim()
+      : FALLBACK_ANDROID_VERSION;
+
   return {
     version,
     macApple: `${DOWNLOAD_BASE_URL}/crowvpn-apple-${version}.dmg`,
@@ -76,21 +155,18 @@ export function buildLatestDownloadLinks(version: string, androidManifest: Andro
     linuxX8664Rpm: `${DOWNLOAD_BASE_URL}/crowvpn-linux-${version}-x86_64.rpm`,
     linuxAarch64Rpm: `${DOWNLOAD_BASE_URL}/crowvpn-linux-${version}-aarch64.rpm`,
     linuxArm64Deb: `${DOWNLOAD_BASE_URL}/crowvpn-linux-${version}-arm64.deb`,
-    androidApk: buildAndroidDownloadUrl(androidManifest),
-    androidVersion:
-      typeof androidManifest.version === "string" && androidManifest.version.trim()
-        ? androidManifest.version.trim()
-        : "1.1",
+    androidApk,
+    androidVersion,
   };
 }
 
 export async function fetchLatestDownloadLinks(): Promise<LatestDownloadLinks> {
   const [desktopResponse, androidResponse] = await Promise.all([
-    fetchWithTimeout(LATEST_YML_URL).catch(() => null),
-    fetchWithTimeout(ANDROID_VERSION_JSON_URL).catch(() => null),
+    fetchRemote(LATEST_YML_URL).catch(() => null),
+    fetchRemote(ANDROID_VERSION_JSON_URL).catch(() => null),
   ]);
 
-  let version = "2.2.0";
+  let version = "2.2.2";
 
   if (desktopResponse?.ok) {
     const yaml = await desktopResponse.text();
@@ -101,11 +177,12 @@ export async function fetchLatestDownloadLinks(): Promise<LatestDownloadLinks> {
 
   if (androidResponse?.ok) {
     try {
-      androidManifest = (await androidResponse.json()) as AndroidVersionManifest;
+      androidManifest = parseAndroidManifest(await androidResponse.json());
     } catch {
       androidManifest = {};
     }
   }
 
-  return buildLatestDownloadLinks(version, androidManifest);
+  const androidApk = await resolveAndroidDownloadUrl(androidManifest);
+  return buildLatestDownloadLinks(version, androidManifest, androidApk);
 }

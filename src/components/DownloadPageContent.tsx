@@ -18,7 +18,7 @@ import {
 } from "@/lib/downloads/latest";
 
 const HERO_ART = "/images/download-banner.png";
-const FALLBACK_DOWNLOAD_LINKS = buildLatestDownloadLinks("2.2.0");
+const FALLBACK_DOWNLOAD_LINKS = buildLatestDownloadLinks("2.2.2");
 
 const heroBullets = [
   "获取 VPN 应用程序，随时随地保护您的在线活动",
@@ -681,15 +681,20 @@ export function LinuxDownloadDialog({
 
 export function AndroidDownloadDialog({
   href,
-  shareHref = getAbsoluteHref(href),
+  apkUrl,
+  androidVersion,
+  shareHref,
   open,
   onClose,
 }: {
   href: string;
+  apkUrl?: string;
+  androidVersion?: string;
   shareHref?: string;
   open: boolean;
   onClose: () => void;
 }) {
+  const downloadHref = apkUrl?.trim() || shareHref || getAbsoluteHref(href);
   useEffect(() => {
     if (!open) return;
 
@@ -736,6 +741,9 @@ export function AndroidDownloadDialog({
                 </h3>
                 <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--muted)]">
                   使用手机扫码，或直接点击按钮下载安装包。
+                  {androidVersion ? (
+                    <span className="mt-1 block font-medium text-[#171717]">最新版本 v{androidVersion}</span>
+                  ) : null}
                 </p>
               </div>
             </div>
@@ -754,15 +762,15 @@ export function AndroidDownloadDialog({
 
         <div className="grid gap-6 px-6 pb-6 pt-6 sm:grid-cols-[220px_minmax(0,1fr)] sm:px-8 sm:pb-8">
           <div className="flex items-center justify-center rounded-2xl border border-[var(--border)] bg-white p-4 shadow-[var(--shadow-card)]">
-            <AndroidQrMark href={shareHref} />
+            <AndroidQrMark href={downloadHref} />
           </div>
           <div className="flex flex-col justify-center">
             <p className="text-lg font-semibold text-[#171717]">扫码下载</p>
             <p className="mt-2 text-sm leading-relaxed text-[var(--muted)]">
-              建议使用手机浏览器扫码打开下载页。二维码与地址固定不变，会自动判断 Android 最新版本。
+              二维码指向当前最新安装包；若无法下载，也可通过官网下载页重试。
             </p>
             <a
-              href={shareHref}
+              href={downloadHref}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-6 inline-flex w-full items-center justify-center rounded-full bg-[var(--accent-primary)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-primary-hover)] sm:w-auto"
@@ -814,7 +822,7 @@ export function DownloadPageContent() {
 
     async function loadLatestDownloadLinks() {
       try {
-        const response = await fetch("/api/downloads/latest");
+        const response = await fetch("/api/downloads/latest", { cache: "no-store" });
         if (!response.ok) return;
         const links = (await response.json()) as LatestDownloadLinks;
         if (!cancelled) setLatestDownloadLinks(links);
@@ -854,7 +862,10 @@ export function DownloadPageContent() {
       let action = fallbackAction;
 
       if (userAgent.includes("android")) {
-        action = { label: "下载 Android APK", href: androidDownloadHref };
+        action = {
+          label: "下载 Android APK",
+          href: latestDownloadLinks.androidApk || androidDownloadHref,
+        };
       } else if (platform === "windows" || userAgent.includes("windows")) {
         if (architecture === "arm") {
           action = { label: "下载 Windows", href: latestDownloadLinks.windowsArm64 };
@@ -883,8 +894,11 @@ export function DownloadPageContent() {
   }, [androidDownloadHref, latestDownloadLinks]);
 
   function handleAndroidDownload() {
+    const target =
+      latestDownloadLinks.androidApk || getAbsoluteHref(androidDownloadHref);
+
     if (window.matchMedia("(max-width: 639px)").matches) {
-      window.location.href = androidDownloadHref;
+      window.location.href = target;
       return;
     }
 
@@ -1106,6 +1120,8 @@ export function DownloadPageContent() {
       />
       <AndroidDownloadDialog
         href={androidDownloadHref}
+        apkUrl={latestDownloadLinks.androidApk}
+        androidVersion={latestDownloadLinks.androidVersion}
         open={androidDialogOpen}
         onClose={() => setAndroidDialogOpen(false)}
       />
