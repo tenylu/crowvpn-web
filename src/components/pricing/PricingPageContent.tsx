@@ -170,20 +170,27 @@ function PlanCard({ period, plan, formatPrice, priceLoading }: PlanCardProps) {
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="text-xl font-semibold leading-snug text-[#171717] sm:text-2xl">{plan.productName}</h3>
         {savePct > 0 ? (
-          <span className="shrink-0 rounded-full bg-[var(--accent-primary)]/18 px-1.5 py-px text-[10px] font-semibold leading-tight text-[var(--accent-primary)] sm:px-2 sm:py-0.5 sm:text-xs">
+          <span
+            key={`${plan.id}-${period}-savings`}
+            className="shrink-0 rounded-full bg-[var(--accent-primary)]/18 px-1.5 py-px text-[10px] font-semibold leading-tight text-[var(--accent-primary)] sm:px-2 sm:py-0.5 sm:text-xs"
+          >
             节省 {savePct}%
           </span>
         ) : null}
       </div>
       <p className="mt-2 flex items-baseline gap-1">
         <span
+          key={`${plan.id}-${period}-monthly-price`}
+          data-no-translate
           className={`text-xl font-semibold tracking-tight text-[#171717] sm:text-2xl ${priceLoading ? "animate-pulse opacity-70" : ""}`}
         >
           {monthlyPrice}
         </span>
         <span className="text-xs text-[#5c5c5c] sm:text-sm">/月</span>
       </p>
-      <p className="mt-2 text-xs leading-relaxed text-[#8b8f96]">{formatPeriodNote(period, totalCny, formatPrice)}</p>
+      <p key={`${plan.id}-${period}-period-note`} className="mt-2 text-xs leading-relaxed text-[#8b8f96]">
+        {formatPeriodNote(period, totalCny, formatPrice)}
+      </p>
       <a
         href={checkoutUrl}
         target="_blank"
@@ -360,6 +367,8 @@ export function PricingPageContent() {
                       </p>
                       <div className="hidden lg:block">
                         <p
+                          key={`${plan.id}-${period}-compare-price`}
+                          data-no-translate
                           className={`mt-1 text-center text-base font-semibold text-[#171717] sm:text-lg ${priceLoading ? "animate-pulse opacity-70" : ""}`}
                         >
                           {formatPrice(monthlyEquivalentCny(plan.pricesCny[period], period))}
