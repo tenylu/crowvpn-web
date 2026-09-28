@@ -8,6 +8,8 @@ import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { LocalizedImage } from "@/components/LocalizedImage";
 import {
   DOWNLOAD_PLATFORMS_SECTION_ID,
+  IOS_DOWNLOAD_URL,
+  IOS_TUTORIAL_URL,
   downloadItems,
   type DownloadItem,
 } from "@/data/downloadPlatforms";
@@ -784,6 +786,119 @@ export function AndroidDownloadDialog({
   );
 }
 
+const iosInstallSteps = [
+  "登录用户面板，进入「下载」页面，打开「加入 iOS 公测」。",
+  "在 App Store 安装 TestFlight，并填写本机 App Store 登录的 Apple ID 邮箱，点击「发送邀请」。",
+  "在 iPhone / iPad 上打开 TestFlight 邀请邮件，接受后安装 CrowVPN。",
+  "打开 CrowVPN，使用 CrowVPN 账号登录即可连接。",
+] as const;
+
+export function IosDownloadDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [onClose, open]);
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
+      role="presentation"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ios-download-title"
+        className="max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[24px] border border-[var(--border)] bg-white shadow-2xl sm:rounded-[28px]"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <div className="relative overflow-hidden border-b border-[var(--border)] bg-[#f7f9fc] px-6 py-6 sm:px-8 sm:py-7">
+          <div
+            className="pointer-events-none absolute -right-20 -top-24 h-48 w-48 rounded-full bg-[var(--accent-primary)]/10 blur-3xl"
+            aria-hidden
+          />
+          <div className="relative flex items-start justify-between gap-4">
+            <div className="flex min-w-0 gap-4">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-[var(--shadow-card)]">
+                <Image src="/images/ios.svg" alt="" width={30} height={30} className="h-7 w-7" unoptimized />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-[var(--accent-primary)]">iOS 应用程序</p>
+                <h3
+                  id="ios-download-title"
+                  className="mt-1 text-2xl font-semibold tracking-tight text-[#171717] sm:text-3xl"
+                >
+                  通过 TestFlight 安装
+                </h3>
+                <p className="mt-2 max-w-xl text-sm leading-relaxed text-[var(--muted)]">
+                  iOS 客户端目前通过 Apple 官方 TestFlight 公测分发，无需切换 App Store 区域。安装前请先阅读教程。
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/70 text-[#8b8f96] shadow-sm transition hover:bg-white hover:text-[#171717]"
+              aria-label="关闭弹窗"
+            >
+              <span aria-hidden className="text-3xl font-light leading-none">
+                ×
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <div className="px-6 pb-6 pt-6 sm:px-8 sm:pb-8">
+          <ol className="space-y-3">
+            {iosInstallSteps.map((step, index) => (
+              <li
+                key={step}
+                className="flex items-start gap-3 rounded-2xl bg-[#f0f2f5] p-4 text-sm leading-relaxed text-[#171717]"
+              >
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--accent-primary)] text-xs font-semibold text-white">
+                  {index + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+
+          <p className="mt-4 text-xs leading-relaxed text-[var(--muted)]">
+            需账号已购买有效套餐；邀请邮箱须与本机 App Store 登录的 Apple ID 一致。
+          </p>
+
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={IOS_TUTORIAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex flex-1 items-center justify-center rounded-full bg-[var(--accent-primary)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-primary-hover)]"
+            >
+              查看安装教程
+            </a>
+            <a
+              href={IOS_DOWNLOAD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex flex-1 items-center justify-center rounded-full border border-[#171717] bg-white px-6 py-3 text-sm font-semibold text-[#171717] transition hover:bg-black/[0.04]"
+            >
+              前往用户面板
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function getAbsoluteHref(href: string) {
   if (typeof window === "undefined") return href;
   return new URL(href, window.location.origin).href;
@@ -810,6 +925,7 @@ export function DownloadPageContent() {
   const [macDialogOpen, setMacDialogOpen] = useState(false);
   const [linuxDialogOpen, setLinuxDialogOpen] = useState(false);
   const [androidDialogOpen, setAndroidDialogOpen] = useState(false);
+  const [iosDialogOpen, setIosDialogOpen] = useState(false);
   const [latestDownloadLinks, setLatestDownloadLinks] = useState<LatestDownloadLinks>(FALLBACK_DOWNLOAD_LINKS);
   const androidDownloadHref = ANDROID_LATEST_DOWNLOAD_PATH;
   const [heroDownloadAction, setHeroDownloadAction] = useState<HeroDownloadAction>({
@@ -976,8 +1092,8 @@ export function DownloadPageContent() {
             无论您是在寻找适用于智能手机、平板电脑的应用程序，还是浏览器扩展程序，CrowVPN 都能满足您的需求。
           </p>
 
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-            {downloadItems.slice(0, 4).map((item) => (
+          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-5">
+            {downloadItems.slice(0, 5).map((item) => (
               <li key={item.id}>
                 <DownloadPlatformCard
                   item={item}
@@ -990,17 +1106,14 @@ export function DownloadPageContent() {
                           ? () => setLinuxDialogOpen(true)
                           : item.id === "android"
                             ? handleAndroidDownload
-                        : undefined
+                            : item.id === "ios"
+                              ? () => setIosDialogOpen(true)
+                              : undefined
                   }
                 />
               </li>
             ))}
           </ul>
-
-          <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-relaxed text-[var(--muted)] sm:text-sm">
-            iOS 版本官方客户端预计 2026 年 12 月份上线，暂时不提供。
-          </p>
-
         </div>
       </section>
       <section className="bg-[var(--surface-muted)] py-14 sm:py-20">
@@ -1125,6 +1238,7 @@ export function DownloadPageContent() {
         open={androidDialogOpen}
         onClose={() => setAndroidDialogOpen(false)}
       />
+      <IosDownloadDialog open={iosDialogOpen} onClose={() => setIosDialogOpen(false)} />
     </>
   );
 }

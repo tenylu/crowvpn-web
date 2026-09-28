@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
   AndroidDownloadDialog,
+  IosDownloadDialog,
   LinuxDownloadDialog,
   MacDownloadDialog,
   WindowsDownloadDialog,
@@ -24,7 +25,8 @@ export function DownloadSection() {
   const [macDialogOpen, setMacDialogOpen] = useState(false);
   const [linuxDialogOpen, setLinuxDialogOpen] = useState(false);
   const [androidDialogOpen, setAndroidDialogOpen] = useState(false);
-  const downloadPlatforms = downloadItems.slice(0, 4).filter((item) => item.src);
+  const [iosDialogOpen, setIosDialogOpen] = useState(false);
+  const downloadPlatforms = downloadItems.slice(0, 5).filter((item) => item.src);
   const androidDownloadHref = ANDROID_LATEST_DOWNLOAD_PATH;
 
   useEffect(() => {
@@ -67,6 +69,8 @@ export function DownloadSection() {
       setLinuxDialogOpen(true);
     } else if (id === "android") {
       handleAndroidDownload();
+    } else if (id === "ios") {
+      setIosDialogOpen(true);
     }
   }
 
@@ -139,6 +143,7 @@ export function DownloadSection() {
         open={androidDialogOpen}
         onClose={() => setAndroidDialogOpen(false)}
       />
+      <IosDownloadDialog open={iosDialogOpen} onClose={() => setIosDialogOpen(false)} />
     </>
   );
 }
