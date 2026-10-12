@@ -85,7 +85,7 @@ export function DownloadSection() {
                 <button
                   type="button"
                   onClick={() => handlePlatformClick(p.id)}
-                  className="flex w-[108px] flex-col items-center gap-3 rounded-2xl bg-[#eceef1] px-3 py-5 transition hover:bg-[#e3e6eb] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#171717] focus-visible:ring-offset-2 sm:w-[118px]"
+                  className="flex w-[108px] cursor-pointer flex-col items-center gap-3 rounded-2xl bg-[#eceef1] px-3 py-5 transition duration-300 ease-out hover:-translate-y-1.5 hover:bg-[#e3e6eb] focus:outline-none focus-visible:-translate-y-1.5 focus-visible:ring-2 focus-visible:ring-[#171717] focus-visible:ring-offset-2 active:translate-y-0 motion-reduce:transform-none motion-reduce:transition-none sm:w-[118px]"
                 >
                   <span className="flex h-10 w-10 items-center justify-center">
                     <Image
@@ -110,9 +110,18 @@ export function DownloadSection() {
           <div className="mt-8 flex justify-center">
             <Link
               href="/download"
-              className="inline-flex items-center justify-center rounded-full bg-[var(--accent-primary)] px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--accent-primary-hover)]"
+              aria-label="获取 CrowVPN"
+              className="download-roll-button inline-flex items-center justify-center rounded-full bg-[var(--accent-primary)] px-8 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--accent-primary-hover)]"
             >
-              获取 CrowVPN
+              <span className="download-roll-label" aria-hidden="true" data-no-translate>
+                {[0, 1].map(copy => (
+                  <span className="download-roll-line" key={copy}>
+                    {Array.from("获取 CrowVPN").map((letter, index) => (
+                      <span key={index} style={{ transitionDuration: `${.2 + index * .1}s` }}>{letter === " " ? "\u00a0" : letter}</span>
+                    ))}
+                  </span>
+                ))}
+              </span>
             </Link>
           </div>
         </div>

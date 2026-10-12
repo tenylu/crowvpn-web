@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import navLayout from "./SiteHeader.module.css";
+import { DropdownNavigation, DropdownNavigationItem } from "./ui/dorpdown-navigation";
 import Link from "next/link";
 import {
   useEffect,
   useState,
-  type ChangeEvent,
   type MouseEvent,
   type MouseEventHandler,
   type ReactNode,
@@ -180,12 +181,6 @@ const navItems: NavItem[] = [
   },
 ];
 
-const navTriggerClass =
-  "inline-flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-[#171717] transition hover:bg-black/[0.04]";
-
-const dropdownPanelBaseClass =
-  "invisible absolute left-0 top-full z-50 mt-1 rounded-xl border border-[var(--border)] bg-white opacity-0 shadow-lg transition-[opacity,visibility] duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100";
-
 const dropdownLinkClass =
   "block px-4 py-2.5 text-sm font-medium text-[#171717] transition hover:bg-black/[0.04]";
 
@@ -200,23 +195,6 @@ function groupNavChildren(children: NavLinkItem[]) {
     }
     return groups;
   }, []);
-}
-
-function ChevronDown({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      aria-hidden
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-    </svg>
-  );
 }
 
 function GlobeIcon({ className }: { className?: string }) {
@@ -290,22 +268,21 @@ function DesktopNavItem({ item, locale }: { item: NavItem; locale: LocaleCode })
     const hasCategories = groups.some((group) => group.category);
 
     return (
-      <div className="group relative">
-        <button type="button" className={navTriggerClass} aria-haspopup="true" aria-expanded="false">
-          {translate(item.label)}
-          <ChevronDown className="opacity-50" />
-        </button>
+      <DropdownNavigationItem label={translate(item.label)}>
         <div
-          className={`${dropdownPanelBaseClass} ${
+          className={`${
             hasCategories
-              ? "right-0 left-auto w-[min(92vw,56rem)] p-5"
+              ? "w-[min(76vw,65rem)] p-7"
               : "min-w-[11.5rem] py-1.5"
           }`}
-          role="menu"
         >
           {hasCategories ? (
-            <div className="grid gap-x-5 gap-y-4 lg:grid-cols-3">
-              {groups.map((group) => (
+            <div>
+              <p className="mb-6 border-b border-[#edf0f2] pb-5 text-lg font-semibold text-[#203443]">{translate(item.label)}</p>
+              <div className="grid grid-cols-4 gap-5">
+              {[["快速开始", "问题解决", "场景指南"], ["官方客户端"], ["第三方客户端"], ["常见问题", "技术支持"]].map((categories, column) => (
+                <div key={categories[0]} className={column ? "space-y-6 border-l border-[#edf0f2] pl-5" : "space-y-6"}>
+              {categories.flatMap(category => groups.filter(group => group.category === category)).map((group) => (
                 <div key={group.category || item.label}>
                   {group.category ? (
                     <p className="mb-1.5 px-2 text-xs font-semibold text-[#8b8f96]">
@@ -318,10 +295,10 @@ function DesktopNavItem({ item, locale }: { item: NavItem; locale: LocaleCode })
                         key={`${item.label}-${child.label}`}
                         href={child.href}
                         external={child.external}
-                        className="block rounded-lg px-2.5 py-2 text-sm transition hover:bg-black/[0.04]"
+                        className="block rounded-lg px-2.5 py-2.5 text-sm transition-colors hover:bg-[#f1f5f8] focus-visible:bg-[#f1f5f8] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#516471]"
                       >
                         <span className="block font-semibold text-[#171717]">{translate(child.label)}</span>
-                        {child.description ? (
+                        {child.description && ["CrowVPN 使用教程", "关于官方客户端", "iPhone / iPad"].includes(child.label) ? (
                           <span className="mt-0.5 block text-xs leading-relaxed text-[var(--muted)]">
                             {translate(child.description)}
                           </span>
@@ -331,6 +308,9 @@ function DesktopNavItem({ item, locale }: { item: NavItem; locale: LocaleCode })
                   </div>
                 </div>
               ))}
+                </div>
+              ))}
+              </div>
             </div>
           ) : (
             item.children.map((child) => (
@@ -345,14 +325,12 @@ function DesktopNavItem({ item, locale }: { item: NavItem; locale: LocaleCode })
             ))
           )}
         </div>
-      </div>
+      </DropdownNavigationItem>
     );
   }
 
   return (
-    <NavAnchor href={item.href} external={item.external} className={navTriggerClass}>
-      {translate(item.label)}
-    </NavAnchor>
+    <DropdownNavigationItem href={item.href} external={item.external} label={translate(item.label)} />
   );
 }
 
@@ -420,6 +398,7 @@ const outlineCtaClass =
   "inline-flex items-center justify-center rounded-full border border-black bg-transparent px-4 py-2 text-xs font-semibold text-[#171717] shadow-none transition hover:bg-black/[0.04] sm:px-5 sm:text-sm";
 
 type SiteHeaderProps = {
+  compactHomeNav?: boolean;
   /**
    * 首屏为全宽配图/视频时开启：未滚动前为导航条增加浅底玻璃态，
    * 避免深色链接叠在暗色背景上不可读（滚动后仍与默认行为一致）。
@@ -443,7 +422,10 @@ const PROTECTED_ISP_KEYWORDS = [
   "hostwinds",
 ];
 
-export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) {
+export function SiteHeader({ solidNavBarUntilScroll = false, compactHomeNav = false }: SiteHeaderProps) {
+  const visibleNavItems = compactHomeNav
+    ? navItems.filter((item) => item.label !== "定价" && item.label !== "下载 VPN")
+    : navItems;
   const [scrolled, setScrolled] = useState(false);
   const [ip, setIp] = useState("获取中...");
   const [isp, setIsp] = useState("获取中...");
@@ -477,6 +459,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
   }, []);
 
   useEffect(() => {
+    if (compactHomeNav) return;
     let cancelled = false;
 
     async function fetchJsonWithTimeout<T>(url: string, timeoutMs = 5000): Promise<T> {
@@ -562,14 +545,13 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [compactHomeNav]);
 
   useEffect(() => {
     document.documentElement.lang = getLocaleMeta(selectedLanguage).htmlLang;
   }, [selectedLanguage]);
 
-  function handleLanguageChange(event: ChangeEvent<HTMLSelectElement>) {
-    const nextLanguage = isLocaleCode(event.target.value) ? event.target.value : defaultLocale;
+  function handleLanguageChange(nextLanguage: LocaleCode) {
     setSelectedLanguage(nextLanguage);
     applyLocale(nextLanguage);
   }
@@ -602,13 +584,13 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
   return (
     <header
       data-no-translate
-      className={`fixed inset-x-0 top-0 z-50 transition-colors ${
+      className={`${navLayout.header} fixed inset-x-0 top-0 z-50 transition-colors ${
         scrolled
           ? "border-b border-black/5 bg-white/55 backdrop-blur-xl"
           : "border-b border-transparent bg-transparent backdrop-blur-none"
       }`}
     >
-      <div className="bg-black text-white">
+      {!compactHomeNav && <div className="bg-black text-white">
         <div className="mx-auto flex h-8 w-full max-w-[var(--nav-max)] items-center justify-center px-3 text-[11px] sm:px-8 sm:text-xs lg:px-12 xl:px-16 2xl:px-24">
           <p className="min-w-0 max-w-full truncate text-center">
             {ipLabel}: {displayIp}
@@ -630,6 +612,7 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
           </p>
         </div>
       </div>
+      }
       <div
         className={
           navBarLifted
@@ -637,9 +620,17 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
             : undefined
         }
       >
-        <div className="mx-auto flex h-[4.25rem] w-full max-w-[var(--nav-max)] items-center justify-between gap-2 px-4 sm:gap-3 sm:px-8 lg:px-12 xl:px-16 2xl:px-24">
+        <div data-site-nav className="mx-auto flex h-[4.25rem] w-full max-w-[var(--nav-max)] items-center justify-between gap-2 px-4 sm:gap-3 sm:px-8 lg:px-12 xl:px-16 2xl:px-24">
           <Link
             href="/"
+            onClick={(event) => {
+              if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+              if (window.location.pathname !== "/") return;
+              event.preventDefault();
+              window.history.replaceState(window.history.state, "", "/");
+              window.dispatchEvent(new Event("crowvpn:restart-home"));
+              window.scrollTo({ top: 0, behavior: "instant" });
+            }}
             className="flex min-w-0 shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-[#171717] lg:text-xl"
           >
             <Image
@@ -654,52 +645,57 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
             <span className="truncate">CrowVPN</span>
           </Link>
 
-          <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2 md:gap-3">
-            <nav className="hidden items-center gap-0.5 md:flex" aria-label="主导航">
-              {navItems.map((item) => (
+          <DropdownNavigation>
+          <div data-nav-actions className="flex min-w-0 shrink-0 items-center gap-2 sm:gap-4 lg:gap-5">
+            <nav className="hidden items-center gap-1 lg:flex xl:gap-2" aria-label="主导航">
+              {visibleNavItems.map((item) => (
                 <DesktopNavItem key={item.label} item={item} locale={selectedLanguage} />
               ))}
             </nav>
 
-            <NavAnchor
+            <div data-nav-account className="hidden items-center gap-2 sm:flex">
+            <DropdownNavigationItem
               href={CROWMESH_USER_LOGIN_URL}
               external
-              className="hidden shrink-0 items-center gap-1 rounded-lg px-3 py-2 text-sm font-semibold text-[#171717] transition hover:bg-black/[0.04] sm:inline-flex"
-            >
-              {loginLabel}
-            </NavAnchor>
+              label={loginLabel}
+            />
 
-            <Link
+            {!compactHomeNav && <Link
               href="/download"
-              className="hidden shrink-0 items-center justify-center rounded-full border border-black bg-transparent px-5 py-2 text-sm font-semibold text-[#171717] shadow-none transition hover:bg-black/[0.04] sm:inline-flex"
+              className="inline-flex h-10 shrink-0 items-center justify-center rounded-full border border-[#243845]/65 bg-white/40 px-5 text-sm font-semibold text-[#243845] shadow-none transition hover:bg-white/80"
             >
               {getAppLabel}
-            </Link>
+            </Link>}
+            </div>
 
-            <div className="relative flex h-10 shrink-0 items-center rounded-lg border-0 bg-transparent pl-1.5 pr-6 shadow-none sm:pl-2 sm:pr-8">
+            <DropdownNavigationItem
+              ariaLabel={`${chooseLanguageLabel}: ${getLocaleMeta(selectedLanguage).label}`}
+              label={<>
               <span className="flex shrink-0 items-center text-[#171717]" aria-hidden>
                 <GlobeIcon className="opacity-80" />
               </span>
-              <label htmlFor="nav-lang" className="sr-only">
-                {chooseLanguageLabel}
-              </label>
-              <select
-                id="nav-lang"
-                name="lang"
-                value={selectedLanguage}
-                onChange={handleLanguageChange}
-                className="h-full min-w-0 max-w-[5.75rem] cursor-pointer appearance-none border-0 bg-transparent py-0 pl-1 pr-1 text-sm font-semibold text-[#171717] outline-none focus:ring-0 sm:max-w-[9rem] sm:pl-1.5"
-              >
+              <span className="max-w-[8.5rem] truncate">{getLocaleMeta(selectedLanguage).label}</span>
+              </>}
+            >
+              <div className="max-h-[min(26rem,65vh)] min-w-[11.5rem] overflow-y-auto py-1.5" aria-label={chooseLanguageLabel}>
                 {localeOptions.map((language) => (
-                  <option key={language.value} value={language.value}>
-                    {language.label}
-                  </option>
+                  <button
+                    key={language.value}
+                    type="button"
+                    aria-pressed={selectedLanguage === language.value}
+                    className={`${dropdownLinkClass} flex w-full items-center justify-between gap-4 text-left focus-visible:bg-black/[0.04] ${selectedLanguage === language.value ? "bg-black/[0.04]" : ""}`}
+                    onClick={() => {
+                      handleLanguageChange(language.value);
+                    }}
+                  >
+                    <span>{language.label}</span>
+                    {selectedLanguage === language.value && <span aria-hidden>✓</span>}
+                  </button>
                 ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-2 top-1/2 size-4 -translate-y-1/2 opacity-50" />
-            </div>
+              </div>
+            </DropdownNavigationItem>
 
-            <details className="relative shrink-0 md:hidden">
+            <details className="relative shrink-0 lg:hidden">
               <summary className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full text-[#171717] hover:bg-black/[0.06] [&::-webkit-details-marker]:hidden">
                 <span className="sr-only">打开菜单</span>
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
@@ -715,19 +711,20 @@ export function SiteHeader({ solidNavBarUntilScroll = false }: SiteHeaderProps) 
                 >
                   {loginLabel}
                 </NavAnchor>
-                <NavAnchor
+                {!compactHomeNav && <NavAnchor
                   href="/download"
                   className={`${outlineCtaClass} mx-2 mb-2 mt-2 w-[calc(100%-1rem)]`}
                   onClick={closeMobileNavMenu}
                 >
                   {getAppLabel}
-                </NavAnchor>
-                {navItems.map((item) => (
+                </NavAnchor>}
+                {visibleNavItems.map((item) => (
                   <MobileNavItem key={item.label} item={item} locale={selectedLanguage} />
                 ))}
               </div>
             </details>
           </div>
+          </DropdownNavigation>
         </div>
       </div>
     </header>

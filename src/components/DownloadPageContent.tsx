@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
+import { ModalLayer } from "@/components/ModalLayer";
 import { LocalizedImage } from "@/components/LocalizedImage";
 import {
   DOWNLOAD_PLATFORMS_SECTION_ID,
@@ -288,7 +289,7 @@ export function WindowsDownloadDialog({
   if (!open) return null;
 
   return (
-    <div
+    <ModalLayer
       className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
@@ -385,7 +386,7 @@ export function WindowsDownloadDialog({
           </div>
         </div>
       </div>
-    </div>
+    </ModalLayer>
   );
 }
 
@@ -454,7 +455,7 @@ export function MacDownloadDialog({
   if (!open) return null;
 
   return (
-    <div
+    <ModalLayer
       className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
@@ -551,7 +552,7 @@ export function MacDownloadDialog({
           </div>
         </div>
       </div>
-    </div>
+    </ModalLayer>
   );
 }
 
@@ -578,7 +579,7 @@ export function LinuxDownloadDialog({
   if (!open) return null;
 
   return (
-    <div
+    <ModalLayer
       className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
@@ -675,7 +676,7 @@ export function LinuxDownloadDialog({
           </div>
         </div>
       </div>
-    </div>
+    </ModalLayer>
   );
 }
 
@@ -709,7 +710,7 @@ export function AndroidDownloadDialog({
   if (!open) return null;
 
   return (
-    <div
+    <ModalLayer
       className="fixed inset-0 z-[80] flex items-start justify-center overflow-y-auto bg-black/35 px-4 py-4 backdrop-blur-sm sm:items-center sm:py-6"
       role="presentation"
       onClick={onClose}
@@ -780,7 +781,7 @@ export function AndroidDownloadDialog({
           </div>
         </div>
       </div>
-    </div>
+    </ModalLayer>
   );
 }
 

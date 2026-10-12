@@ -20,16 +20,25 @@ export function PlatformInstantSection() {
           <button
             type="button"
             onClick={openDestinationPicker}
-            className="mt-8 inline-flex h-11 items-center justify-center rounded-full bg-[var(--accent-primary)] px-8 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--accent-primary-hover)]"
+            aria-label="查看所有节点"
+            className="download-roll-button mt-8 inline-flex h-11 cursor-pointer items-center justify-center rounded-full bg-[var(--accent-primary)] px-8 text-sm font-semibold text-white shadow-sm transition hover:bg-[var(--accent-primary-hover)]"
           >
-            查看所有节点
+            <span className="download-roll-label" aria-hidden="true" data-no-translate>
+              {[0, 1].map(copy => (
+                <span className="download-roll-line" key={copy}>
+                  {Array.from("查看所有节点").map((letter, index) => (
+                    <span key={index} style={{ transitionDuration: `${.2 + index * .1}s` }}>{letter}</span>
+                  ))}
+                </span>
+              ))}
+            </span>
           </button>
         </div>
 
-        <div className="mt-10 grid gap-8 sm:mt-16 lg:grid-cols-2 lg:gap-12 lg:items-start">
-          {/* 左：顶部文案 + 下方配图（参考 Saily：加高模块，文案不靠半透明层） */}
+        <div className="mt-10 grid gap-8 lg:grid-cols-2 lg:items-stretch">
+          {/* 文案与完整配图上下排列，卡片随内容自然撑开。 */}
           <div>
-            <div className="flex w-full flex-col overflow-hidden rounded-[32px] border border-[var(--border)] bg-[#EEF1F5] shadow-[var(--shadow-card)] sm:min-h-[660px] sm:rounded-[50px] lg:min-h-[740px]">
+            <div className="flex h-full w-full flex-col overflow-hidden rounded-[32px] border border-[var(--border)] bg-[#EEF1F5] shadow-[var(--shadow-card)] sm:rounded-[50px]">
               <div className="shrink-0 px-5 pb-5 pt-7 sm:px-8 sm:pb-8 sm:pt-10 lg:px-10 lg:pt-12">
                 <h3 className="text-xl font-semibold text-[#171717] sm:text-2xl">一键接入，落地即用</h3>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
@@ -44,7 +53,7 @@ export function PlatformInstantSection() {
                   alt="CrowVPN 一键接入示意"
                   width={1110}
                   height={1110}
-                  className="h-auto w-full object-contain object-bottom"
+                  className="ml-auto block h-auto w-full max-w-[360px] object-contain object-right-bottom [mask-image:linear-gradient(to_right,transparent,black_5%)]"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority={false}
                 />
@@ -54,7 +63,7 @@ export function PlatformInstantSection() {
 
           {/* 右：顶部文案 + 下方配图（与左侧结构一致） */}
           <div>
-            <div className="flex w-full flex-col overflow-hidden rounded-[32px] border border-[var(--border)] bg-[#EEF1F5] shadow-[var(--shadow-card)] sm:min-h-[660px] sm:rounded-[50px] lg:min-h-[740px]">
+            <div className="flex h-full w-full flex-col overflow-hidden rounded-[32px] border border-[var(--border)] bg-[#EEF1F5] shadow-[var(--shadow-card)] sm:rounded-[50px]">
               <div className="shrink-0 px-5 pb-5 pt-7 sm:px-8 sm:pb-8 sm:pt-10 lg:px-10 lg:pt-12">
                 <h3 className="text-xl font-semibold text-[#171717] sm:text-2xl">适用于所有设备，不必碰运气</h3>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
@@ -68,7 +77,7 @@ export function PlatformInstantSection() {
                   alt="CrowVPN 多设备支持示意"
                   width={1110}
                   height={1110}
-                  className="h-auto w-full object-contain object-bottom"
+                  className="ml-auto block h-auto w-full max-w-[360px] object-contain object-right-bottom [mask-image:linear-gradient(to_right,transparent,black_5%)]"
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   priority={false}
                 />
@@ -77,9 +86,9 @@ export function PlatformInstantSection() {
           </div>
         </div>
 
-        <div id="online-safety" className="scroll-mt-24 mt-8 sm:mt-14 lg:mt-16">
+        <div id="online-safety" className="scroll-mt-24 mt-8">
           <div className="overflow-hidden rounded-[32px] border border-[var(--border)] bg-[#EEF1F5] shadow-[var(--shadow-card)] sm:rounded-[50px]">
-            <div className="flex flex-col gap-8 p-5 sm:min-h-[520px] sm:gap-12 sm:p-10 lg:min-h-[560px] lg:flex-row lg:items-center lg:gap-14 lg:p-14 xl:min-h-[600px] xl:p-16">
+            <div className="flex flex-col gap-8 p-5 sm:gap-10 sm:p-10 lg:min-h-[440px] lg:flex-row lg:items-center lg:gap-12">
               <div className="flex max-w-xl shrink-0 flex-col justify-center lg:w-[46%] lg:max-w-none">
                 <h3 className="text-xl font-semibold text-[#171717] sm:text-2xl">出门在外，也能安心上网</h3>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-[var(--muted)] sm:text-base">
@@ -89,13 +98,22 @@ export function PlatformInstantSection() {
                 </p>
                 <Link
                   href="/security"
-                  className="mt-6 inline-flex w-fit items-center justify-center rounded-full border border-[#171717] bg-transparent px-6 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-black/[0.04] sm:mt-8 sm:px-7 sm:py-3"
+                  aria-label="了解更多"
+                  className="download-roll-button mt-6 inline-flex w-fit items-center justify-center rounded-full border border-[#171717] bg-transparent px-6 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-black/[0.04] sm:mt-8 sm:px-7 sm:py-3"
                 >
-                  了解更多
+                  <span className="download-roll-label" aria-hidden="true" data-no-translate>
+                    {[0, 1].map(copy => (
+                      <span className="download-roll-line" key={copy}>
+                        {Array.from("了解更多").map((letter, index) => (
+                          <span key={index} style={{ transitionDuration: `${.2 + index * .1}s` }}>{letter}</span>
+                        ))}
+                      </span>
+                    ))}
+                  </span>
                 </Link>
               </div>
 
-              <div className="relative min-h-[260px] flex-1 overflow-hidden rounded-[28px] sm:min-h-[320px] lg:self-stretch lg:-my-14 lg:-mr-14 lg:rounded-none xl:-my-16 xl:-mr-16">
+              <div className="relative min-h-[260px] flex-1 overflow-hidden rounded-[28px] sm:min-h-[300px] lg:self-stretch lg:-my-10 lg:-mr-10 lg:rounded-none">
                 <LocalizedImage
                   zhSrc="/images/banner4.png"
                   neutralSrc="/images/i18n-neutral/banner4.png"

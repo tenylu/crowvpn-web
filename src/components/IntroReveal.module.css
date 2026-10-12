@@ -1,0 +1,4 @@
+.reveal > [data-reveal-pending] { opacity:0; }
+@media (prefers-reduced-motion:reduce) {
+  .reveal > [data-reveal-pending] { opacity:1; }
+}

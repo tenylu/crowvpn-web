@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { BrandLogoStrip } from "@/components/BrandLogoStrip";
+import { TrustSection, WindowJourney } from "@/components/WindowJourney";
 import { DestinationPickerProvider } from "@/components/DestinationPickerProvider";
 import { HeroSearchBar } from "@/components/HeroSearchBar";
-import { LocalizedImage } from "@/components/LocalizedImage";
+import { IntroVideo } from "@/components/IntroVideo";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { DownloadSection } from "@/components/DownloadSection";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { PlatformInstantSection } from "@/components/PlatformInstantSection";
 import { VpnHighlightsSection } from "@/components/VpnHighlightsSection";
-
-/** 将配图放在项目 `public/images/` 下，默认读取此文件名（可改扩展名或常量） */
-const HERO_BANNER_SRC = "/images/hero-banner.png";
+import { ContentScrollReveal } from "@/components/ContentScrollReveal";
 
 export const metadata: Metadata = {
   title: "CrowVPN — 官方首页：VPN 套餐、客户端下载与加密连接",
@@ -42,89 +39,38 @@ const steps = [
   { title: "连接后即可安全访问", body: "连接成功后即可获得稳定加密通道，跨境访问与日常上网更安心。" },
 ];
 
-function HeroBannerImage() {
-  return (
-    <div className="pointer-events-none relative mx-auto h-full min-h-[320px] w-[118%] max-w-[560px] -translate-x-[3%] sm:w-full sm:max-w-lg sm:translate-x-0 lg:max-w-none">
-      <Image
-        src={HERO_BANNER_SRC}
-        alt="CrowVPN 产品配图"
-        fill
-        className="scale-[1.32] object-contain object-center sm:scale-100 lg:object-right-bottom"
-        sizes="(max-width: 1024px) 100vw, 50vw"
-        priority
-      />
-    </div>
-  );
-}
-
 export default function Home() {
   return (
     <DestinationPickerProvider>
-    <div className="flex min-h-full flex-1 flex-col bg-[var(--background)]">
-      <section
-        className="relative min-h-[680px] overflow-x-clip sm:h-[764px]"
-        style={{
-          background: "linear-gradient(180deg, #9ECEF1 0%, #E9F2FF 100%)",
-        }}
-      >
-        <SiteHeader />
-        <div className="mx-auto flex h-full w-full max-w-[var(--page-max)] flex-col gap-3 px-6 pb-10 pt-24 sm:gap-8 sm:pt-24 lg:flex-row lg:items-stretch lg:gap-10 lg:px-10 lg:pt-28">
-          <div className="order-2 relative z-30 flex max-w-xl shrink-0 flex-col justify-center lg:order-1 lg:w-[46%] lg:max-w-none">
-            <h1 className="text-3xl font-semibold leading-[1.15] tracking-tight text-[#171717] sm:text-5xl sm:leading-[1.1]">
-              经济实惠，适合国际旅行的网络服务
-            </h1>
-            <p className="mt-4 text-lg text-[var(--muted)] sm:text-xl">您需要在连接到哪里去？</p>
-            <HeroSearchBar />
-          </div>
-          <div className="order-1 relative min-h-[330px] flex-1 lg:order-2 lg:min-h-0">
-            <HeroBannerImage />
-          </div>
-        </div>
-      </section>
-
-      <div className="relative z-10 mx-auto mt-6 w-full max-w-[var(--page-max)] px-6 sm:-mt-14 lg:px-10">
-        <div className="flex flex-col gap-5 rounded-[28px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow-card)] sm:flex-row sm:items-center sm:justify-between sm:gap-8 sm:rounded-full sm:p-8">
-          <p className="text-center text-base font-semibold text-[#171717] sm:text-left sm:text-lg">
-            他们都在使用
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-7 gap-y-4 sm:justify-end sm:gap-x-12">
-            <BrandLogoStrip imageClassName="h-7 w-auto object-contain sm:h-8" />
-          </div>
-        </div>
-      </div>
+    <div className="home-redesign flex min-h-full flex-1 flex-col bg-[var(--background)]">
+      <SiteHeader compactHomeNav />
+      <WindowJourney />
 
       <main className="flex-1 bg-[var(--background)]">
+        <ContentScrollReveal />
+        <HeroSearchBar showTrigger={false} />
         <section id="vpn-intro" className="scroll-mt-24 py-20 sm:py-28">
           <div className="mx-auto grid max-w-[var(--page-max)] items-center gap-12 px-6 lg:grid-cols-2 lg:gap-16 lg:px-10">
-            <div className="relative mx-auto w-full max-w-xl lg:mx-0">
-              <LocalizedImage
-                zhSrc="/images/crowvpn-intro-illustration.png"
-                neutralSrc="/images/i18n-neutral/crowvpn-intro-illustration.png"
-                alt="CrowVPN 产品展示图"
-                width={1692}
-                height={930}
-                className="h-auto w-full object-contain"
-                unoptimized
-              />
-            </div>
             <div>
               <h2 className="text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl">什么是 CrowVPN?</h2>
               <p className="mt-5 text-base leading-relaxed text-[var(--muted)] sm:text-lg">
                 CrowVPN 通过加密隧道与全球节点网络，帮助你减少地理限制与网络审查带来的访问阻碍。无论是国际网站、流媒体视频、直播活动，还是国际 AI模型相关服务，都能获得更自由、稳定且私密的连接体验。
               </p>
             </div>
+            <div className="relative mx-auto w-full max-w-xl lg:mx-0">
+              <IntroVideo />
+            </div>
           </div>
         </section>
 
-        <VpnHighlightsSection />
+        <TrustSection />
 
-        <PlatformInstantSection />
+        <VpnHighlightsSection />
 
         <section id="how" className="scroll-mt-24 py-20 sm:py-24">
           <div className="mx-auto max-w-[var(--page-max)] px-6 lg:px-10">
-            <p className="text-sm font-medium text-[#8b8f96]">如何使用 CrowVPN 服务</p>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl">CrowVPN 的工作原理？</h2>
-            <p className="mt-4 text-base text-[var(--muted)]">只需三步，即可完成配置并保持在线安全。</p>
+            <h2 className="text-center text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl">如何使用 CrowVPN 服务</h2>
+            <p className="mt-4 text-center text-base text-[var(--muted)]">只需三步，即可完成配置并保持在线安全。</p>
             <ol className="mt-10 grid gap-5 lg:grid-cols-3 lg:gap-6">
               {steps.map((s, i) => (
                 <li
@@ -198,6 +144,8 @@ export default function Home() {
             </ol>
           </div>
         </section>
+
+        <PlatformInstantSection />
 
         <TestimonialsSection />
 

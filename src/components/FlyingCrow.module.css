@@ -1,0 +1,7 @@
+.crow { position:absolute;inset:0;pointer-events:none;transform:translate(-65%,45%) scale(.88) rotate(-7deg);transform-origin:50% 65%; }
+.poster,.canvas { display:block;width:100%;height:100%;object-fit:contain;position:absolute;inset:0; }
+.canvas { opacity:0; }
+.crow[data-ready="true"] .canvas { opacity:1; }
+.crow[data-ready="true"] .poster { opacity:0; }
+.source { position:absolute;width:1px;height:1px;opacity:0;pointer-events:none; }
+@media(prefers-reduced-motion:reduce) { .crow { transform:none!important; } }

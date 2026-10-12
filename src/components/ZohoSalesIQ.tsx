@@ -1,4 +1,5 @@
 import Script from "next/script";
+import { SupportHint } from "./SupportHint";
 
 const ZOHO_WIDGET_SRC =
   "https://salesiq.zohopublic.com/widget?wc=siq661b3c690233e140e667eb2011f71bacbde8e0374600c18ca43af18d499fa838";
@@ -14,6 +15,7 @@ export function ZohoSalesIQ() {
         {`window.$zoho=window.$zoho || {};$zoho.salesiq=$zoho.salesiq||{ready:function(){}}`}
       </Script>
       <Script id="zsiqscript" src={ZOHO_WIDGET_SRC} strategy="lazyOnload" />
+      <SupportHint />
     </>
   );
 }

@@ -2,19 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CookiePreferenceFooterButton } from "@/components/cookie/CookiePreferenceFooterButton";
 import { defaultLocale, isLocaleCode, type LocaleCode } from "@/i18n/locales";
 
 const APP_STORE_BADGE_ZH =
-  "https://sb.nordcdn.com/m/78af7aeb12c18c9b/original/app-store-zh.svg";
+  "/images/store-badges/app-store-zh.svg";
 const GOOGLE_PLAY_BADGE_ZH =
-  "https://sb.nordcdn.com/m/23812e7951677c39/original/google-play-zh.svg";
+  "/images/store-badges/google-play-zh.svg";
 /** 非中文语言使用的官方英文徽章 SVG */
 const APP_STORE_BADGE_INTL =
-  "https://sb.nordcdn.com/m/3bd4c58600abc36b/original/app-store.svg";
+  "/images/store-badges/app-store.svg";
 const GOOGLE_PLAY_BADGE_INTL =
-  "https://sb.nordcdn.com/m/61c12f9617ed35b4/original/google-play.svg";
+  "/images/store-badges/google-play.svg";
 
 function getStoreBadges(locale: LocaleCode) {
   if (locale === "zh-CN" || locale === "zh-HK") {
@@ -75,6 +75,53 @@ const footerGroups = [
 ];
 
 export function SiteFooter() {
+  const footerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const footer = footerRef.current;
+    if (!footer || !footer.closest(".home-redesign")) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const rect = footer.getBoundingClientRect();
+      const start = window.scrollY + rect.top - window.innerHeight * .8;
+      const end = document.documentElement.scrollHeight - window.innerHeight;
+      const pageProgress = Math.max(0, Math.min(1, (window.scrollY - start) / Math.max(1, end - start)));
+      const progress = reducedMotion.matches ? .5 : pageProgress;
+      const widthRatio = window.matchMedia("(max-width: 639px)").matches ? 3 : 1.8;
+      const rx = rect.width * widthRatio / 2;
+      const ry = rect.height;
+      const dx = rect.width * .5;
+      const y = ry * (1 - Math.sqrt(1 - (dx / rx) ** 2));
+      const path = footer.querySelector<SVGPathElement>(".footer-arc-light path");
+      path?.setAttribute("d", `M ${rx - dx} ${y} A ${rx} ${ry} 0 0 1 ${rx + dx} ${y}`);
+      if (path) {
+        const head = progress * 110 - 10;
+        path.style.strokeDasharray = "10 200";
+        path.style.strokeDashoffset = String(-head);
+        path.style.opacity = String(Math.min(1, (1 - progress) / .08));
+        const length = path.getTotalLength();
+        const from = path.getPointAtLength(Math.max(0, head) / 100 * length);
+        const to = path.getPointAtLength(Math.min(100, head + 10) / 100 * length);
+        const gradient = footer.querySelector("#footer-arc-beam");
+        gradient?.setAttribute("x1", String(from.x));
+        gradient?.setAttribute("y1", String(from.y));
+        gradient?.setAttribute("x2", String(to.x));
+        gradient?.setAttribute("y2", String(to.y));
+      }
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    reducedMotion.addEventListener("change", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      reducedMotion.removeEventListener("change", schedule);
+    };
+  }, []);
   const [selectedLanguage, setSelectedLanguage] = useState<LocaleCode>(() => {
     if (typeof window === "undefined") return defaultLocale;
 
@@ -95,7 +142,19 @@ export function SiteFooter() {
   const storeBadges = getStoreBadges(selectedLanguage);
 
   return (
-    <footer className="py-16">
+    <footer ref={footerRef} className="py-16">
+      <svg className="footer-arc-light" aria-hidden="true" focusable="false">
+        <path pathLength="100" strokeDasharray="4 100" strokeDashoffset="0" fill="none" stroke="url(#footer-arc-beam)" strokeWidth="3" strokeLinecap="round" />
+        <defs>
+          <linearGradient id="footer-arc-beam" gradientUnits="userSpaceOnUse">
+            <stop stopColor="#b8e7ff" stopOpacity="0" />
+            <stop offset=".25" stopColor="#b8e7ff" stopOpacity=".4" />
+            <stop offset=".5" stopColor="#fff" />
+            <stop offset=".75" stopColor="#b8e7ff" stopOpacity=".4" />
+            <stop offset="1" stopColor="#b8e7ff" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </svg>
       <div className="mx-auto flex w-full max-w-[var(--page-max)] flex-col gap-4 px-6 sm:flex-row sm:items-center sm:justify-between lg:px-10">
         <Link
           href="/"
@@ -114,7 +173,7 @@ export function SiteFooter() {
         <div className="flex flex-wrap items-center gap-2.5 sm:justify-end sm:gap-3">
           <a
             href="/download"
-            className="inline-flex h-9 shrink-0 items-center opacity-90 transition hover:opacity-100 sm:h-10"
+            className="footer-store-button inline-flex shrink-0 items-center"
             aria-label={storeBadges.appStoreLabel}
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- 外链官方徽章 */}
@@ -122,7 +181,7 @@ export function SiteFooter() {
           </a>
           <a
             href="/download"
-            className="inline-flex h-9 shrink-0 items-center opacity-90 transition hover:opacity-100 sm:h-10"
+            className="footer-store-button inline-flex shrink-0 items-center"
             aria-label={storeBadges.googlePlayLabel}
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- 外链官方徽章 */}
@@ -142,9 +201,18 @@ export function SiteFooter() {
           </p>
           <Link
             href="/download"
-            className="mt-5 inline-flex items-center justify-center rounded-full bg-[var(--accent-primary)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-primary-hover)]"
+            aria-label="获取 CrowVPN"
+            className="download-roll-button mt-5 inline-flex items-center justify-center rounded-full bg-[var(--accent-primary)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--accent-primary-hover)]"
           >
-            获取 CrowVPN
+            <span className="download-roll-label" aria-hidden="true" data-no-translate>
+              {[0, 1].map(copy => (
+                <span className="download-roll-line" key={copy}>
+                  {Array.from("获取 CrowVPN").map((letter, index) => (
+                    <span key={index} style={{ transitionDuration: `${.2 + index * .1}s` }}>{letter === " " ? "\u00a0" : letter}</span>
+                  ))}
+                </span>
+              ))}
+            </span>
           </Link>
         </div>
         <div className="grid flex-1 grid-cols-2 gap-x-10 gap-y-9 text-sm text-[var(--muted)] sm:grid-cols-4 lg:max-w-3xl">
@@ -158,7 +226,7 @@ export function SiteFooter() {
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium hover:text-[#171717]"
+                    className="footer-text-link font-medium"
                   >
                     {link.label}
                   </a>
@@ -166,7 +234,7 @@ export function SiteFooter() {
                   <Link
                     key={`${group.title}-${link.label}`}
                     href={link.href}
-                    className="font-medium hover:text-[#171717]"
+                    className="footer-text-link font-medium"
                   >
                     {link.label}
                   </Link>
