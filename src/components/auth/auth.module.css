@@ -1,0 +1,62 @@
+/* Reference: 1484 × 898 card in a 1955 × 1248 image; columns 45.82% / 54.18%. */
+.page { --ink: #182132; --link: #5754ff; min-height: 100svh; display: grid; place-items: center; padding: 10vh 32px 7vh; background: #f7f7f8; font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--ink); }
+.card { width: min(100%, 1484px); display: grid; grid-template-columns: 45.82% 54.18%; border-radius: 32px; overflow: hidden; background: white; box-shadow: 0 20px 65px #18213209; }
+.visual { position: relative; min-width: 0; background: #c7c5c5 url('/media/crow-light-blended-poster.jpg') center / cover no-repeat; touch-action: none; user-select: none; cursor: default; overflow: hidden; }
+.animationStage { position: absolute; pointer-events: none; }
+.eyes { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; pointer-events: none; }
+.panel { padding: 78px 11.85% 68px; min-width: 0; }
+.brand { display: flex; align-items: center; justify-content: center; gap: 14px; width: fit-content; margin: 0 auto; color: var(--ink); text-decoration: none; }
+.brand span { font-size: 28px; font-weight: 600; letter-spacing: -1px; }
+.brand img { width: 50px; height: 50px; }
+.heading { text-align: center; margin: 58px 0 52px; }
+.heading h1 { margin: 0; font-size: 38px; font-weight: 600; line-height: 1.45; letter-spacing: -1.4px; }
+.heading p { margin: 14px 0 0; font-size: 21px; color: #999; line-height: 1.5; }
+.form { margin: 0; }
+.field + .field { margin-top: 40px; }
+.field label { display: block; color: #939393; font-size: 18px; line-height: 28px; }
+.inputWrap { display: flex; align-items: center; height: 69px; border-bottom: 1px solid #d5d5d5; transition: border-color 150ms; }
+.inputWrap:focus-within { border-color: var(--link); }
+.inputWrap input { width: 100%; min-width: 0; background: transparent; border: 0; padding: 10px 0 4px; color: var(--ink); font: inherit; font-size: 19px; outline: none; }
+.inputWrap input::placeholder { color: #c6c6c6; opacity: 1; }
+.eye { flex: 0 0 28px; color: #9caec2; padding: 4px; background: none; border: 0; cursor: pointer; }
+.options { margin-top: 39px; display: flex; justify-content: space-between; align-items: center; font-size: 19px; gap: 15px; }
+.remember { display: flex; align-items: center; gap: 11px; cursor: pointer; }
+.remember input { appearance: none; margin: 0; width: 22px; height: 22px; border: 1.5px solid #e0e6ef; border-radius: 7px; cursor: pointer; display: grid; place-items: center; }
+.remember input:checked { background: var(--link); border-color: var(--link); }
+.remember input:checked::after { content: '✓'; color: white; font-size: 15px; }
+.options button, .switch button { border: 0; background: none; padding: 0; color: var(--link); font: inherit; cursor: pointer; }
+.submit { width: 100%; height: 67px; margin-top: 41px; border: 0; border-radius: 999px; color: white; background: #000; font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; transition: background 150ms; }
+.submit:hover { background: #252525; }
+.submit:active { background: #414141; }
+.message { color: #666; font-size: 13px; line-height: 1.6; margin: 9px 0 0; min-height: 21px; }
+.switch { text-align: center; margin-top: 22px; font-size: 19px; line-height: 30px; color: #999; }
+.switch a { color: var(--link); font-weight: 600; text-decoration: none; }
+.switch a:hover, .options button:hover { text-decoration: underline; }
+.card :is(button,a,input):focus-visible, .visual:focus-visible { outline: 2px solid var(--link); outline-offset: 5px; }
+.register .heading { margin: 35px 0 30px; }
+.register .field + .field { margin-top: 24px; }
+.register .submit { margin-top: 30px; }
+@media (max-width: 1500px) and (min-width: 761px) {
+  .card { max-width: 1188px; border-radius: 27px; }
+  .panel { padding-top: 52px; padding-bottom: 43px; }
+  .brand img { width: 42px; height: 42px; } .brand span { font-size: 25px; }
+  .heading { margin: 38px 0 36px; } .heading h1 { font-size: 32px; } .heading p { font-size: 17px; margin-top: 10px; }
+  .field label { font-size: 15px; } .inputWrap { height: 55px; } .inputWrap input { font-size: 16px; }
+  .field + .field { margin-top: 28px; } .options { margin-top: 30px; font-size: 16px; }
+  .submit { height: 56px; margin-top: 32px; font-size: 17px; } .switch { font-size: 16px; margin-top: 14px; }
+}
+@media (max-width: 760px) {
+  .page { padding: 24px 18px; display: block; }
+  .card { grid-template-columns: 1fr; max-width: 480px; margin: auto; border-radius: 24px; }
+  .visual { height: 260px; background-position: center 35%; }
+  .video { object-position: center 35%; }
+  .panel { padding: 30px 28px 32px; }
+  .brand { gap: 10px; } .brand img { width: 36px; height: 36px; } .brand span { font-size: 23px; }
+  .heading, .register .heading { margin: 25px 0 26px; } .heading h1 { font-size: 28px; } .heading p { font-size: 15px; margin-top: 8px; }
+  .field label { font-size: 14px; } .inputWrap { height: 50px; } .inputWrap input { font-size: 16px; }
+  .field + .field, .register .field + .field { margin-top: 22px; }
+  .options { font-size: 14px; margin-top: 25px; } .remember input { width: 20px; height: 20px; }
+  .submit { height: 52px; font-size: 17px; margin-top: 28px; } .switch { font-size: 15px; margin-top: 7px; }
+}
+@media (prefers-reduced-motion: reduce) { .card * { transition: none; } }

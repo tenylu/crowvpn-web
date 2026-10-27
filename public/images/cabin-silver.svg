@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1000" fill="none"><defs>
+<path id="o" d="M900 82C712 82 630 183 630 370V630C630 817 712 918 900 918C1088 918 1170 817 1170 630V370C1170 183 1088 82 900 82Z"/>
+<path id="i" d="M900 157C748 157 697 243 697 390V610C697 757 748 843 900 843C1052 843 1103 757 1103 610V390C1103 243 1052 157 900 157Z"/>
+<path id="g" d="M900 181C756 181 716 265 716 395V605C716 735 756 819 900 819C1044 819 1084 735 1084 605V395C1084 265 1044 181 900 181Z"/>
+<mask id="m"><rect width="1800" height="1000" fill="white"/><use href="#g" fill="black"/></mask><clipPath id="c"><use href="#o"/></clipPath>
+<radialGradient id="wall" cx="45%" cy="35%" r="70%"><stop stop-color="#fff"/><stop offset=".42" stop-color="#f1f3f4"/><stop offset="1" stop-color="#dce2e7"/></radialGradient>
+<linearGradient id="body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fafbfc"/><stop offset=".23" stop-color="#f1f3f5"/><stop offset=".52" stop-color="#e2e7eb"/><stop offset=".74" stop-color="#c4cdd4"/><stop offset="1" stop-color="#f7f9fa"/></linearGradient>
+<linearGradient id="recess" x2="0" y2="1"><stop stop-color="#617382"/><stop offset=".17" stop-color="#9cabb6"/><stop offset=".44" stop-color="#c4d2db"/><stop offset=".72" stop-color="#e0eaf0"/><stop offset="1" stop-color="#fcfefe"/></linearGradient>
+<linearGradient id="metal"><stop stop-color="#81929e"/><stop offset=".06" stop-color="#fff"/><stop offset=".14" stop-color="#b7c5ce"/><stop offset=".5" stop-color="#e8eef2"/><stop offset=".85" stop-color="#f9fdff"/><stop offset=".96" stop-color="#8da2b1"/><stop offset="1" stop-color="#d8e6ef"/></linearGradient>
+<filter id="soft"><feGaussianBlur stdDeviation="14"/></filter><filter id="tight"><feGaussianBlur stdDeviation="3"/></filter><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope=".028"/></feComponentTransfer></filter></defs>
+<g mask="url(#m)"><rect width="1800" height="1000" fill="url(#wall)"/>
+<use href="#o" transform="translate(9 15)" stroke="#576979" stroke-opacity=".28" stroke-width="24" filter="url(#soft)"/>
+<use href="#o" fill="url(#body)" stroke="#b5c0c9" stroke-width="2"/>
+<g clip-path="url(#c)"><use href="#o" transform="translate(13 16)" stroke="#fff" stroke-opacity=".96" stroke-width="22" filter="url(#soft)"/><use href="#o" transform="translate(-13 -12)" stroke="#8092a1" stroke-opacity=".36" stroke-width="23" filter="url(#soft)"/>
+<use href="#i" transform="translate(1 -10)" fill="#607584" stroke="#718493" stroke-opacity=".55" stroke-width="30" filter="url(#soft)"/><use href="#i" transform="translate(-6 11)" stroke="#fff" stroke-width="22" filter="url(#soft)"/><use href="#i" fill="url(#recess)"/><use href="#i" stroke="url(#metal)" stroke-width="5"/></g>
+<use href="#g" stroke="#7d9aaa" stroke-width="6"/><use href="#g" transform="translate(0 2)" stroke="#eefaff" stroke-opacity=".85" stroke-width="2"/>
+<rect width="1800" height="1000" filter="url(#grain)"/>
+<path d="M861 122Q900 115 939 122" stroke="#7f909e" stroke-opacity=".5" stroke-width="7" stroke-linecap="round" filter="url(#tight)"/><path d="M862 127Q900 121 938 127" stroke="#fff" stroke-opacity=".9" stroke-width="3" stroke-linecap="round"/></g></svg>

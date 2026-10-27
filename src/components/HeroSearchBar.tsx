@@ -34,7 +34,7 @@ type RestCountry = {
   name?: { common?: string };
 };
 
-export function HeroSearchBar() {
+export function HeroSearchBar({ showTrigger = true }: { showTrigger?: boolean }) {
   const { open, setOpen } = useDestinationPicker();
   const [phase, setPhase] = useState<"select" | "connecting" | "ready">("select");
   const [target, setTarget] = useState<Destination | null>(null);
@@ -342,15 +342,15 @@ export function HeroSearchBar() {
 
   return (
     <>
-      <button
+      {showTrigger && <button
         id="hero-search"
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={selected ? `已选择 ${selected}，点击可更改` : "搜索目的地，点击打开列表"}
+        aria-label={selected ? `已选择 ${selected}，点击可更改` : "您需要在连接到哪里去？点击打开目的地列表"}
         className="relative z-20 mt-8 flex w-full cursor-pointer items-center gap-2 rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-[15px] text-left shadow-[var(--shadow-card)] transition hover:border-[var(--border-strong)] sm:max-w-[21.6rem]"
       >
         <span className={`min-w-0 flex-1 text-sm ${selected ? "text-[#171717]" : "text-[#a3a3a3]"}`}>
-          {selected ?? "搜索目的地"}
+          {selected ?? "您需要在连接到哪里去？"}
         </span>
         <span
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[var(--accent-primary)] text-white shadow-sm"
@@ -364,7 +364,7 @@ export function HeroSearchBar() {
             />
           </svg>
         </span>
-      </button>
+      </button>}
       {mounted && modal ? createPortal(modal, document.body) : null}
     </>
   );

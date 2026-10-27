@@ -1,6 +1,7 @@
 "use client";
-
 import Image from "next/image";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import styles from "./TestimonialsSection.module.css";
 import { getBrandLogoSrc, getTrustPack, type LocalizedReview } from "@/data/localizedTrust";
 import { useLocaleCode } from "@/hooks/useLocaleCode";
 
@@ -158,23 +159,42 @@ function MasonryCard({ entry, reviews }: { entry: (typeof MASONRY_SEQUENCE)[numb
 }
 
 export function TestimonialsSection() {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [columnCount, setColumnCount] = useState(4);
   const locale = useLocaleCode();
   const { reviews } = getTrustPack(locale);
-  const masonryEntries = MASONRY_SEQUENCE.filter((entry) => entry.index < reviews.length);
-
+  const entries = MASONRY_SEQUENCE.filter(entry => entry.index < reviews.length);
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const tablet = window.matchMedia("(min-width: 640px)");
+    const update = () => setColumnCount(desktop.matches ? 4 : tablet.matches ? 2 : 1);
+    update();
+    desktop.addEventListener("change", update);
+    tablet.addEventListener("change", update);
+    const observer = new IntersectionObserver(([entry]) => { viewport.dataset.inView = String(entry.isIntersecting); });
+    observer.observe(viewport);
+    return () => { observer.disconnect();desktop.removeEventListener("change", update);tablet.removeEventListener("change", update); };
+  }, []);
   return (
-    <section id="testimonials" className="scroll-mt-24 bg-[#f3f7fa] py-16 sm:py-20">
+    <section id="testimonials" className="scroll-mt-24 py-16 sm:py-20">
       <div className="mx-auto max-w-[var(--page-max)] px-6 lg:px-10">
-        <h2 className="text-center text-3xl font-semibold tracking-tight text-[#111827] sm:text-4xl">
-          用户对 CrowVPN 的评价
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-center text-base text-[#4b5563] sm:text-lg">
-          不妨了解其他用户对 CrowVPN 的评价如何！
-        </p>
-
-        <div className="mt-12 columns-1 [column-gap:1.5rem] md:columns-2 lg:columns-4" data-no-translate>
-          {masonryEntries.map((entry, i) => (
-            <MasonryCard key={`${reviews[entry.index]!.name}-${i}`} entry={entry} reviews={reviews} />
+        <h2 className="text-center text-3xl font-semibold tracking-tight sm:text-4xl">用户对 CrowVPN 的评价</h2>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-base sm:text-lg">不妨了解其他用户对 CrowVPN 的评价如何！</p>
+        <div ref={viewportRef} className={styles.viewport} data-no-translate style={{ "--columns": columnCount } as CSSProperties}>
+          {Array.from({ length: columnCount }, (_, column) => (
+            <div className={styles.column} key={`${locale}-${columnCount}-${column}`}>
+              <div className={styles.track} style={{ "--duration": `${60 + column * 8}s` } as CSSProperties}>
+                {[0,1].map(copy => (
+                  <div className={styles.group} key={copy} aria-hidden={copy === 1 ? true : undefined}>
+                    {entries.filter((_, index) => index % columnCount === column).map(entry => (
+                      <MasonryCard key={entry.index} entry={{ ...entry, gapClass: "" }} reviews={reviews} />
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

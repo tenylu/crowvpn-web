@@ -127,7 +127,7 @@ export function AboutPageContent() {
         <div className="mx-auto max-w-[var(--page-max)] px-6 lg:px-10">
           <p className="text-center text-sm font-semibold text-[#171717] sm:text-left sm:text-base">他们都在使用</p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-12 gap-y-6 sm:mt-10 sm:justify-between">
-            <BrandLogoStrip imageClassName="h-8 w-auto object-contain opacity-90 sm:h-9" />
+            <BrandLogoStrip itemClassName="inline-flex shrink-0 items-center gap-2" imageClassName="h-8 w-auto object-contain opacity-90 sm:h-9" />
           </div>
         </div>
       </section>

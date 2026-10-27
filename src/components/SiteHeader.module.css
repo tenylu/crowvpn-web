@@ -1,0 +1,34 @@
+@media (min-width:1024px) {
+  :global(.home-redesign) .header [data-site-nav] { max-width:none;padding-right:24px; }
+  :global(.home-redesign) .header [data-nav-actions] { margin-left:auto;gap:6px; }
+  :global(.home-redesign) .header [data-nav-actions] > nav { gap:6px; }
+  :global(.home-redesign) .header [data-nav-account] { gap:6px; }
+}
+
+:global(.home-redesign) .header :is([data-nav-actions] > nav > a, [data-nav-account] > a, .language > summary) {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:40px;
+  padding:0 10px;
+  gap:6px;
+  border-radius:8px;
+  color:#243845;
+  font-size:14px;
+  font-weight:500;
+  line-height:20px;
+  white-space:nowrap;
+  transition:background-color .18s ease,color .18s ease;
+}
+:global(.home-redesign) .header :is([data-nav-actions] > nav > a, [data-nav-account] > a, .language > summary):hover {
+  background:rgba(36,56,69,.065);
+  color:#172b38;
+}
+:global(.home-redesign) .header :is([data-nav-actions] > nav > a, [data-nav-account] > a, .language > summary):focus-visible {
+  outline:2px solid #516471;
+  outline-offset:2px;
+  background:rgba(36,56,69,.065);
+}
+
+.language summary:focus-visible { outline:2px solid #243845;outline-offset:3px; }
+.language summary { padding-inline:7px; }

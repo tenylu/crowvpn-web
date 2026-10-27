@@ -1,0 +1,26 @@
+.viewport { --window-height:640px;display:grid;grid-template-columns:repeat(var(--columns,4),minmax(0,1fr));gap:24px;height:var(--window-height);margin-top:28px;overflow:hidden; }
+.column {
+  --top-offset:0px;--bottom-offset:40px;--fade:140px;
+  min-width:0;height:calc(var(--window-height) - var(--top-offset) - var(--bottom-offset));margin-top:var(--top-offset);overflow:hidden;
+  mask-image:linear-gradient(to bottom,transparent,
+    rgb(0 0 0 / 8%) calc(var(--fade) * .125),rgb(0 0 0 / 30%) calc(var(--fade) * .25),rgb(0 0 0 / 60%) calc(var(--fade) * .375),rgb(0 0 0 / 80%) calc(var(--fade) * .5),rgb(0 0 0 / 92%) calc(var(--fade) * .625),rgb(0 0 0 / 97%) calc(var(--fade) * .75),rgb(0 0 0 / 99%) calc(var(--fade) * .875),#000 var(--fade),
+    #000 calc(100% - var(--fade)),rgb(0 0 0 / 99%) calc(100% - var(--fade) * .875),rgb(0 0 0 / 97%) calc(100% - var(--fade) * .75),rgb(0 0 0 / 92%) calc(100% - var(--fade) * .625),rgb(0 0 0 / 80%) calc(100% - var(--fade) * .5),rgb(0 0 0 / 60%) calc(100% - var(--fade) * .375),rgb(0 0 0 / 30%) calc(100% - var(--fade) * .25),rgb(0 0 0 / 8%) calc(100% - var(--fade) * .125),transparent);
+}
+.column:nth-child(2) { --top-offset:48px;--bottom-offset:0px;--fade:152px; }
+.column:nth-child(3) { --top-offset:16px;--bottom-offset:64px;--fade:132px; }
+.column:nth-child(4) { --top-offset:64px;--bottom-offset:20px;--fade:144px; }
+.column:nth-child(2) .track { animation-delay:-13s; }
+.column:nth-child(3) .track { animation-delay:-27s; }
+.column:nth-child(4) .track { animation-delay:-8s; }
+.track { animation:review-stream var(--duration,60s) linear infinite;animation-play-state:paused; }
+.group { display:flex;flex-direction:column;gap:24px;padding-bottom:24px;min-height:var(--window-height); }
+.viewport[data-in-view="true"] .track { animation-play-state:running; }
+@keyframes review-stream { to { transform:translateY(-50%); } }
+@media(max-width:639px) { .viewport { --window-height:580px;gap:16px; } }
+@media(prefers-reduced-motion:reduce) {
+  .viewport { height:auto;overflow:visible; }
+  .column { height:auto;margin-top:0;overflow:visible;mask-image:none; }
+  .track { animation:none; }
+  .group { min-height:0; }
+  .group[aria-hidden="true"] { display:none; }
+}
