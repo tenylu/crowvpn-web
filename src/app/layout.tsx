@@ -103,6 +103,7 @@ export default function RootLayout({
     <html
       lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} h-full scroll-smooth antialiased`}
+      {...(process.env.NODE_ENV === "development" ? { "data-motion": "full" } : {})}
     >
       <body className="flex min-h-full flex-col bg-[var(--background)] text-[var(--foreground)]">
         <SiteExperience>{children}</SiteExperience>

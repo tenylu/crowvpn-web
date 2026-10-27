@@ -42,13 +42,13 @@
   .trust .trustTitle { margin-bottom:22px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  .trust { height:auto; }
-  .trustContent { position:relative;height:auto;min-height:640px;padding:150px 16px; }
-  .trustStats { gap:14px; }
-  .trust .trustStat { grid-area:auto;opacity:1!important;transform:none!important; }
-  .trustLogo { transform:none; }
-  .trustLogoImage { animation:none; }
-  .trust .trustTitle,.trustStats { opacity:1; }
+  :global(html:not([data-motion="full"])) .trust { height:auto; }
+  :global(html:not([data-motion="full"])) .trustContent { position:relative;height:auto;min-height:640px;padding:150px 16px; }
+  :global(html:not([data-motion="full"])) .trustStats { gap:14px; }
+  :global(html:not([data-motion="full"])) .trust .trustStat { grid-area:auto;opacity:1!important;transform:none!important; }
+  :global(html:not([data-motion="full"])) .trustLogo { transform:none; }
+  :global(html:not([data-motion="full"])) .trustLogoImage { animation:none; }
+  :global(html:not([data-motion="full"])) .trust .trustTitle,:global(html:not([data-motion="full"])) .trustStats { opacity:1; }
 }
 .windowClouds { position:absolute;left:50%;top:50%;width:max(100vw,180svh);height:max(55.5556vw,100svh);transform:translate(-50%,-50%);opacity:var(--window-cloud-opacity,1);pointer-events:none; }
 .windowClouds > div { position:absolute;aspect-ratio:1.95; }
@@ -115,8 +115,8 @@
   .actions a:hover .purchaseLine:nth-child(2) > span { transform:translateY(0); }
 }
 @keyframes purchase-shine { 0% { left:-100px; } 60%,100% { left:100%; } }
-@media(prefers-reduced-motion:reduce) { .purchaseLine > span { transition:none; }.actions a:first-child:hover::before { animation:none; } }
+@media(prefers-reduced-motion:reduce) { :global(html:not([data-motion="full"])) .purchaseLine > span { transition:none; }:global(html:not([data-motion="full"])) .actions a:first-child:hover::before { animation:none; } }
 @media(max-width:760px) { .journey{min-height:660px}.title{font-size:34px}.title > span{top:26%;left:6%}.title > span+span{top:auto;bottom:30%;right:6%}.description{top:17%;bottom:auto;left:6%;font-size:11px}.skip{bottom:10%;left:7%;right:auto;text-align:left}.cabin img{object-fit:cover}.actions{bottom:calc(16px + env(safe-area-inset-bottom, 0px))}.actions a{padding:13px 22px} }
-@media(prefers-reduced-motion:reduce) { .journey{height:auto}.stage{position:relative;opacity:1;min-height:620px}.sky,.cabin,.cloudLayer{transform:none}.cloudLayer img,.windowClouds img{animation:none}.skip{opacity:1} }
+@media(prefers-reduced-motion:reduce) { :global(html:not([data-motion="full"])) .journey{height:auto}:global(html:not([data-motion="full"])) .stage{position:relative;opacity:1;min-height:620px}:global(html:not([data-motion="full"])) .sky,:global(html:not([data-motion="full"])) .cabin,:global(html:not([data-motion="full"])) .cloudLayer{transform:none}:global(html:not([data-motion="full"])) .cloudLayer img,:global(html:not([data-motion="full"])) .windowClouds img{animation:none}:global(html:not([data-motion="full"])) .skip{opacity:1} }
 @media(max-width:760px) { .skip{font-size:13px;gap:8px;min-height:44px;padding-top:8px} }
-@media(prefers-reduced-motion:reduce) { .scrollArrow path,.skip > span{animation:none;opacity:1;transform:none} }
+@media(prefers-reduced-motion:reduce) { :global(html:not([data-motion="full"])) .scrollArrow path,:global(html:not([data-motion="full"])) .skip > span{animation:none;opacity:1;transform:none} }

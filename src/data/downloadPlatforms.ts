@@ -4,6 +4,10 @@ export const CROWVPN_CLIENT_HOME = "https://crowvpn.com";
 /** 用户中心登录（与结账 redirect 同源） */
 export const CROWMESH_USER_LOGIN_URL = "/go/login";
 
+export const IOS_DOWNLOAD_URL = "https://login.crowmesh.com/";
+
+export const IOS_TUTORIAL_URL = "https://docs.crowmesh.com/client/ios-download";
+
 export const DOWNLOAD_PLATFORMS_SECTION_ID = "download-platforms";
 
 export type DownloadItemKind = "app" | "extension";
@@ -53,7 +57,7 @@ export const downloadItems: DownloadItem[] = [
     id: "ios",
     kind: "app",
     label: "iOS 应用程序",
-    href: CROWVPN_CLIENT_HOME,
+    href: IOS_DOWNLOAD_URL,
     src: "/images/ios.svg",
   },
   {

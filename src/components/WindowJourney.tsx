@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { prefersReducedMotion } from "@/lib/motionPreference";
 import styles from "./WindowJourney.module.css";
 import { FlyingCrow } from "./FlyingCrow";
 import { BrandLogoStrip } from "./BrandLogoStrip";
@@ -58,6 +59,7 @@ export function WindowJourney() {
     const interact = () => { restoring = false; };
     const trust = document.getElementById("home-trust");
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    const reduced = () => prefersReducedMotion(reduce);
     let frame = 0;
     let visualProgress = 0;
     let lastFrame = 0;
@@ -70,7 +72,7 @@ export function WindowJourney() {
       // The fixed scene never inherits the spacer's bottom edge. The spacer
       // measures only the journey, so content is already in view at handoff.
       const distance = element.offsetHeight;
-      const p = reduce.matches || distance <= 0 ? 0 : clamp(-element.getBoundingClientRect().top / distance);
+      const p = reduced() || distance <= 0 ? 0 : clamp(-element.getBoundingClientRect().top / distance);
       if (restoring && p >= .762) restoredBeyondIntro = true;
       if (!restoring && p < .762) restoredBeyondIntro = false;
       const now = performance.now();
@@ -85,7 +87,7 @@ export function WindowJourney() {
       const waitingForCrow = !restoring && !restoredBeyondIntro && p > .012 && crowProgress < .995 && now-crowUpdatedAt < 2500;
       // Use the crow's decoded timeline for the window too. A fast wheel
       // event must not advance the opaque cabin ahead of the retiring bird.
-      const visualTarget = restoring || reduce.matches || element.dataset.crowProgress === undefined || (!waitingForCrow && p > .762) || (p===0 && crowProgress===0) ? p : p <= .762
+      const visualTarget = restoring || reduced() || element.dataset.crowProgress === undefined || (!waitingForCrow && p > .762) || (p===0 && crowProgress===0) ? p : p <= .762
         ? .012+.75*crowProgress
         : crowProgress < .995 ? .012+.75*crowProgress : p;
       visualProgress = restoring ? visualTarget : visualProgress + (visualTarget-visualProgress)*blend;
@@ -97,7 +99,7 @@ export function WindowJourney() {
       // Start the handoff during the final part of the decoded retreat, so
       // the heading is already emerging when the crow clears the viewport.
       const reveal = smooth(.58, .74, visualProgress);
-      const introReady = reduce.matches || reveal >= .999;
+      const introReady = reduced() || reveal >= .999;
       if (intro && intro.dataset.cabinReady !== String(introReady)) {
         intro.dataset.cabinReady = String(introReady);
         window.dispatchEvent(new Event("crowvpn:cabin-visibility"));
@@ -116,8 +118,8 @@ export function WindowJourney() {
         };
         releaseTimer = window.setTimeout(release, 550);
       }
-      const trustTitle = reduce.matches ? 1 : smooth(.56, .68, visualProgress);
-      const trustLogos = reduce.matches ? 1 : smooth(.60, .73, visualProgress);
+      const trustTitle = reduced() ? 1 : smooth(.56, .68, visualProgress);
+      const trustLogos = reduced() ? 1 : smooth(.60, .73, visualProgress);
       trust?.style.setProperty("--trust-title", String(trustTitle));
       trust?.style.setProperty("--trust-logos", String(trustLogos));
       element.style.setProperty("--scene-opacity", String(1-reveal));
@@ -125,9 +127,9 @@ export function WindowJourney() {
       // edge clouds. Clearing them before handoff leaves an empty blue frame.
       element.style.setProperty("--window-cloud-opacity", "1");
       element.style.setProperty("--window-cloud-spread", `${12*travel}vw`);
-      stage.style.visibility = !reduce.matches && reveal >= .999 ? "hidden" : "visible";
+      stage.style.visibility = !reduced() && reveal >= .999 ? "hidden" : "visible";
       stage.style.pointerEvents = visualProgress > .08 ? "none" : "";
-      stage.inert = !reduce.matches && visualProgress > .08;
+      stage.inert = !reduced() && visualProgress > .08;
       const contentProgress = clamp((window.scrollY-distance)/Math.max(1, document.documentElement.scrollHeight-window.innerHeight-distance));
       // Anchor sunset to the actual module, including responsive layout and
       // translated content heights, instead of a percentage of the whole page.
@@ -289,11 +291,12 @@ export function TrustSection() {
     const element = section.current;
     if (!element) return;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    const reduced = () => prefersReducedMotion(reduce);
     const lines = element.querySelectorAll<HTMLElement>("[data-trust-stat]");
     const icons = element.querySelectorAll<HTMLElement>(`.${styles.trustLogo}`);
     let entered = false;
     let entrance: Animation[] = [];
-    element.dataset.iconState = reduce.matches ? "ready" : "waiting";
+    element.dataset.iconState = reduced() ? "ready" : "waiting";
     const measure = () => {
       icons.forEach((icon) => {
         const parent = icon.offsetParent as HTMLElement | null;
@@ -311,7 +314,7 @@ export function TrustSection() {
       const travel = Math.max(1, element.offsetHeight - panel.offsetHeight);
       const scrolled = 72 - rect.top;
       const progress = clamp(scrolled / travel);
-      if (reduce.matches) {
+      if (reduced()) {
         entrance.forEach(animation => animation.cancel());
         element.dataset.iconState = "ready";
       } else if (!entered && rect.top < window.innerHeight * .48 && rect.bottom > 0) {
@@ -335,8 +338,8 @@ export function TrustSection() {
         // Each row rises into its own permanent slot, as in the reference.
         // Completed rows stay visible; scrolling backwards reverses the reveal.
         const visibility = clamp((progress - index * .18) / .24);
-        line.style.opacity = String(reduce.matches ? 1 : visibility);
-        line.style.transform = reduce.matches ? "none" : `translate3d(0,${(1 - visibility) * Math.min(320, panel.offsetHeight * .48)}px,0)`;
+        line.style.opacity = String(reduced() ? 1 : visibility);
+        line.style.transform = reduced() ? "none" : `translate3d(0,${(1 - visibility) * Math.min(320, panel.offsetHeight * .48)}px,0)`;
       });
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(render); };

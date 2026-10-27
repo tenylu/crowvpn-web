@@ -4,4 +4,4 @@
 .crow[data-ready="true"] .canvas { opacity:1; }
 .crow[data-ready="true"] .poster { opacity:0; }
 .source { position:absolute;width:1px;height:1px;opacity:0;pointer-events:none; }
-@media(prefers-reduced-motion:reduce) { .crow { transform:none!important; } }
+@media(prefers-reduced-motion:reduce) { :global(html:not([data-motion="full"])) .crow { transform:none!important; } }

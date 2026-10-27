@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { prefersReducedMotion } from "@/lib/motionPreference";
 import styles from "./FlyingCrow.module.css";
 
 /**
@@ -31,6 +32,7 @@ export function FlyingCrow() {
     const decode = buffer.getContext("2d", { willReadFrequently: true });
     if (!context || !decode) return;
     const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+    const reduced = () => prefersReducedMotion(reduce);
     let visible = false;
     let disposed = false;
     let blocked = false;
@@ -86,7 +88,7 @@ export function FlyingCrow() {
       frame = 0;
       video.pause();
     };
-    const isActive = () => visible && !document.hidden && !reduce.matches && !disposed && !blocked;
+    const isActive = () => visible && !document.hidden && !reduced() && !disposed && !blocked;
     const position = () => {
       if (video === takeoff) {
         // Smooth the spatial path at display refresh rate; the video follows
@@ -270,7 +272,7 @@ export function FlyingCrow() {
       }
     };
     const onJourney = () => {
-      if (!journey || reduce.matches) return;
+      if (!journey || reduced()) return;
       const distance = journey.offsetHeight;
       const p = distance > 0 ? -journey.getBoundingClientRect().top/distance : 0;
       departure = Math.max(0, Math.min(1, (p-.012)/.75));
