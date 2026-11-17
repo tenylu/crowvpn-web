@@ -329,14 +329,77 @@ export const checkoutPeriodByBillingPeriod: Record<BillingPeriod, CrowmeshChecko
   "24": "two_year",
 };
 
-export function crowmeshBuyPath(planId: number, period: BillingPeriod): string {
-  return `/subscription/balance/${planId}?period=${checkoutPeriodByBillingPeriod[period]}`;
+export function crowmeshBuyPath(
+  planId: number,
+  period: BillingPeriod,
+  options?: { seats?: number; team?: boolean },
+): string {
+  const query = new URLSearchParams({
+    period: checkoutPeriodByBillingPeriod[period],
+  });
+  if (options?.team) query.set("team", "1");
+  if (options?.seats && options.seats > 0) query.set("seats", String(options.seats));
+  return `/subscription/balance/${planId}?${query.toString()}`;
 }
 
-export function crowmeshBuyUrl(planId: number, period: BillingPeriod): string {
-  return `/go/buy?planId=${planId}&period=${checkoutPeriodByBillingPeriod[period]}`;
+export function crowmeshBuyUrl(
+  planId: number,
+  period: BillingPeriod,
+  options?: { seats?: number; team?: boolean },
+): string {
+  const query = new URLSearchParams({
+    planId: String(planId),
+    period: checkoutPeriodByBillingPeriod[period],
+  });
+  if (options?.team) query.set("team", "1");
+  if (options?.seats && options.seats > 0) query.set("seats", String(options.seats));
+  return `/go/buy?${query.toString()}`;
 }
 
-export function crowmeshBuyWithLoginUrl(planId: number, period: BillingPeriod): string {
-  return `/go/login?redirect=${encodeURIComponent(crowmeshBuyPath(planId, period))}`;
+export function crowmeshBuyWithLoginUrl(
+  planId: number,
+  period: BillingPeriod,
+  options?: { seats?: number; team?: boolean },
+): string {
+  return `/go/login?redirect=${encodeURIComponent(crowmeshBuyPath(planId, period, options))}`;
+}
+
+export const TEAM_MIN_SEATS = 3;
+export const TEAM_MAX_SEATS = 10;
+
+export const teamPlanOffers = [
+  {
+    id: "standard" as const,
+    checkoutPlanId: 2,
+    productName: "C50G",
+    title: "C50G Team Plan",
+    coverSrc: "/images/team/img-team-c50g.png",
+    trafficGb: 120,
+    audience: "适用于小团队及工作室",
+    monthlyPriceCny: 15,
+  },
+  {
+    id: "flagship" as const,
+    checkoutPlanId: 3,
+    productName: "C120Pro",
+    title: "C120Pro Team Plan",
+    coverSrc: "/images/team/img-team-c120pro.png",
+    trafficGb: 250,
+    audience: "适用于小型企业部门",
+    monthlyPriceCny: 30,
+  },
+] as const;
+
+export function clampTeamSeats(value: number): number {
+  if (!Number.isFinite(value)) return TEAM_MIN_SEATS;
+  return Math.min(TEAM_MAX_SEATS, Math.max(TEAM_MIN_SEATS, Math.round(value)));
+}
+
+export function teamYearUnitCny(planId: "standard" | "flagship"): number {
+  const plan = pricingPlans.find((item) => item.id === planId);
+  return plan?.pricesCny["12"] ?? 0;
+}
+
+export function teamMonthlyEquivalentCny(planId: "standard" | "flagship"): number {
+  return teamYearUnitCny(planId) / 12;
 }

@@ -18,6 +18,7 @@ import {
   whyChooseItems,
 } from "./pricing-data";
 import { RefundGuaranteeIcon } from "./RefundGuaranteeIcon";
+import { TeamPlanModal } from "./TeamPlanModal";
 
 function CheckMark() {
   return (
@@ -301,6 +302,7 @@ function WhyIcon({ type }: { type: (typeof whyChooseItems)[number]["icon"] }) {
 
 export function PricingPageContent() {
   const [period, setPeriod] = useState<BillingPeriod>("24");
+  const [teamDialogOpen, setTeamDialogOpen] = useState(false);
   const { status, formatPrice } = usePricingLocale();
   const priceLoading = status === "loading";
 
@@ -317,8 +319,20 @@ export function PricingPageContent() {
           <h1 className="text-3xl font-semibold tracking-tight text-[#171717] sm:text-4xl lg:text-[2.75rem]">
             比较 VPN 套餐和定价
           </h1>
-          <div className="mt-8 flex justify-center">
-            <BillingToggle period={period} onChange={setPeriod} />
+          <div className="mt-8 grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_auto_1fr] sm:gap-4">
+            <div className="hidden sm:block" aria-hidden />
+            <div className="justify-self-center">
+              <BillingToggle period={period} onChange={setPeriod} />
+            </div>
+            <div className="justify-self-center sm:justify-self-end">
+              <button
+                type="button"
+                onClick={() => setTeamDialogOpen(true)}
+                className="inline-flex shrink-0 items-center justify-center rounded-full border border-[var(--border-strong)] bg-white px-4 py-2.5 text-sm font-semibold text-[#171717] transition hover:bg-black/[0.04] sm:px-5"
+              >
+                团队版
+              </button>
+            </div>
           </div>
           <div className="mt-10 grid items-stretch gap-6 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
             {pricingPlans.map((plan) => (
@@ -505,6 +519,11 @@ export function PricingPageContent() {
           </div>
         </div>
       </section>
+      <TeamPlanModal
+        open={teamDialogOpen}
+        onClose={() => setTeamDialogOpen(false)}
+        formatPrice={formatPrice}
+      />
     </>
   );
 }

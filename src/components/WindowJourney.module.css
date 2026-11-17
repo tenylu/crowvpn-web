@@ -81,8 +81,9 @@
 .crowScene { position:absolute;left:50%;top:50%;width:max(100vw,180svh);height:max(55.5556vw,100svh);transform:translate(-50%,-50%);pointer-events:none; }
 .crowPosition { position:absolute;left:35%;top:39.8%;width:28%;aspect-ratio:1; }
 .title { font-size:clamp(36px,4.6vw,76px);font-weight:500;letter-spacing:-.045em;line-height:1.15;color:#243845; }
-.title > span { position:absolute;top:28%;left:7%;opacity:var(--copy);transform:translateX(calc(-1 * var(--exit))); }
-.title > span+span { left:auto;right:7%;top:59%;transform:translateX(var(--exit)); }
+.title > span { position:absolute;top:28%;left:7%;max-width:min(30vw,10.5em);opacity:var(--copy);transform:translateX(calc(-1 * var(--exit)));pointer-events:none; }
+.title > span+span { left:auto;right:7%;top:59%;text-align:right;transform:translateX(var(--exit)); }
+@media(max-width:1100px) { .title{font-size:clamp(30px,4.2vw,58px)} .title > span{max-width:min(34vw,9.5em)} }
 .brand { position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);font-size:25px;letter-spacing:-1px;color:white;opacity:var(--brand); }
 .description { position:absolute;left:7%;bottom:15%;font-size:16px;line-height:1.8;color:#516471;opacity:var(--copy); }
 .skip { position:absolute;right:9%;bottom:16%;display:flex;align-items:center;gap:10px;min-height:48px;font-size:15px;font-weight:500;letter-spacing:.025em;padding-top:14px;border-top:1px solid #8799a866;color:#516471;opacity:var(--copy);transition:color .2s; }
@@ -116,7 +117,7 @@
 }
 @keyframes purchase-shine { 0% { left:-100px; } 60%,100% { left:100%; } }
 @media(prefers-reduced-motion:reduce) { :global(html:not([data-motion="full"])) .purchaseLine > span { transition:none; }:global(html:not([data-motion="full"])) .actions a:first-child:hover::before { animation:none; } }
-@media(max-width:760px) { .journey{min-height:660px}.title{font-size:34px}.title > span{top:26%;left:6%}.title > span+span{top:auto;bottom:30%;right:6%}.description{top:17%;bottom:auto;left:6%;font-size:11px}.skip{bottom:10%;left:7%;right:auto;text-align:left}.cabin img{object-fit:cover}.actions{bottom:calc(16px + env(safe-area-inset-bottom, 0px))}.actions a{padding:13px 22px} }
+@media(max-width:760px) { .journey{min-height:660px}.title{font-size:clamp(26px,7.2vw,34px)}.title > span{top:26%;left:6%;max-width:min(42vw,8.5em)}.title > span+span{top:auto;bottom:30%;right:6%}.description{top:17%;bottom:auto;left:6%;font-size:11px}.skip{bottom:10%;left:7%;right:auto;text-align:left}.cabin img{object-fit:cover}.actions{bottom:calc(16px + env(safe-area-inset-bottom, 0px))}.actions a{padding:13px 22px} }
 @media(prefers-reduced-motion:reduce) { :global(html:not([data-motion="full"])) .journey{height:auto}:global(html:not([data-motion="full"])) .stage{position:relative;opacity:1;min-height:620px}:global(html:not([data-motion="full"])) .sky,:global(html:not([data-motion="full"])) .cabin,:global(html:not([data-motion="full"])) .cloudLayer{transform:none}:global(html:not([data-motion="full"])) .cloudLayer img,:global(html:not([data-motion="full"])) .windowClouds img{animation:none}:global(html:not([data-motion="full"])) .skip{opacity:1} }
 @media(max-width:760px) { .skip{font-size:13px;gap:8px;min-height:44px;padding-top:8px} }
 @media(prefers-reduced-motion:reduce) { :global(html:not([data-motion="full"])) .scrollArrow path,:global(html:not([data-motion="full"])) .skip > span{animation:none;opacity:1;transform:none} }

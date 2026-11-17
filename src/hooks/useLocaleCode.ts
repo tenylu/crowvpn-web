@@ -16,9 +16,12 @@ export function readLocaleFromEvent(event: Event): LocaleCode | null {
 }
 
 export function useLocaleCode() {
-  const [locale, setLocale] = useState<LocaleCode>(readStoredLocale);
+  // Always start with the SSR default to avoid hydration mismatches, then sync.
+  const [locale, setLocale] = useState<LocaleCode>(defaultLocale);
 
   useEffect(() => {
+    setLocale(readStoredLocale());
+
     const handleLocaleChange = (event: Event) => {
       const nextLocale = readLocaleFromEvent(event);
       if (nextLocale) setLocale(nextLocale);

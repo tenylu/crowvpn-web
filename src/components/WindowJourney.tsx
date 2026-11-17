@@ -8,6 +8,8 @@ import styles from "./WindowJourney.module.css";
 import { FlyingCrow } from "./FlyingCrow";
 import { BrandLogoStrip } from "./BrandLogoStrip";
 import { TextReveal } from "./ui/cascade-text";
+import { useLocaleCode } from "@/hooks/useLocaleCode";
+import { getMessage } from "@/i18n/messages";
 
 const clamp = (n: number) => Math.max(0, Math.min(1, n));
 const smooth = (a: number, b: number, p: number) => {
@@ -15,7 +17,37 @@ const smooth = (a: number, b: number, p: number) => {
   return t * t * (3 - 2 * t);
 };
 
+function segmentLabel(text: string) {
+  if (typeof Intl !== "undefined" && Intl.Segmenter) {
+    return Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text), (s) => s.segment);
+  }
+  return Array.from(text);
+}
+
+function ActionLabel({ text }: { text: string }) {
+  const chars = segmentLabel(text);
+  return (
+    <span className={styles.purchaseLabel} aria-hidden="true" data-no-translate>
+      {[0, 1].map((copy) => (
+        <span className={styles.purchaseLine} key={copy}>
+          {chars.map((letter, index) => (
+            <span key={index} style={{ transitionDuration: `${0.2 + index * 0.1}s` }}>
+              {letter === " " ? "\u00a0" : letter}
+            </span>
+          ))}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function WindowJourney() {
+  const locale = useLocaleCode();
+  const titleLeft = getMessage(locale, "随时随地");
+  const titleRight = getMessage(locale, "连接世界");
+  const buyLabel = getMessage(locale, "选购套餐");
+  const downloadLabel = getMessage(locale, "下载客户端");
+  const actionsLabel = getMessage(locale, "快捷操作");
   const root = useRef<HTMLElement>(null);
   const sky = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -246,7 +278,10 @@ export function WindowJourney() {
       </div>
       <div className={styles.crowScene} aria-hidden="true"><div className={styles.crowPosition}><FlyingCrow /></div></div>
       <div className={styles.cabin} aria-hidden="true"><Image src="/images/cabin-silver.svg" alt="" fill unoptimized preload /></div>
-      <h1 className={styles.title}><span><TextReveal text="随时随地" /></span><span><TextReveal text="连接世界" delay={430} /></span></h1>
+      <h1 className={styles.title} data-no-translate>
+        <span><TextReveal key={`${locale}-left`} text={titleLeft} /></span>
+        <span><TextReveal key={`${locale}-right`} text={titleRight} delay={430} align="end" /></span>
+      </h1>
       <p className={styles.description}>经济实惠，<br />适合国际旅行的网络服务</p>
       <a className={styles.skip} href="#vpn-intro">
         <svg className={styles.scrollArrow} width="18" height="26" viewBox="0 0 18 26" fill="none" aria-hidden="true">
@@ -258,28 +293,12 @@ export function WindowJourney() {
       </a>
     </div>
   </section>
-    <nav className={styles.actions} aria-label="快捷操作">
-      <Link href="/pricing" aria-label="选购套餐">
-        <span className={styles.purchaseLabel} aria-hidden="true" data-no-translate>
-          {[0, 1].map((copy) => (
-            <span className={styles.purchaseLine} key={copy}>
-              {Array.from("选购套餐").map((letter, index) => (
-                <span key={index} style={{ transitionDuration: `${.2 + index * .1}s` }}>{letter}</span>
-              ))}
-            </span>
-          ))}
-        </span>
+    <nav className={styles.actions} aria-label={actionsLabel} data-no-translate>
+      <Link href="/pricing" aria-label={buyLabel}>
+        <ActionLabel key={`${locale}-buy`} text={buyLabel} />
       </Link>
-      <Link href="/download" aria-label="下载客户端">
-        <span className={styles.purchaseLabel} aria-hidden="true" data-no-translate>
-          {[0, 1].map((copy) => (
-            <span className={styles.purchaseLine} key={copy}>
-              {Array.from("下载客户端").map((letter, index) => (
-                <span key={index} style={{ transitionDuration: `${.2 + index * .1}s` }}>{letter}</span>
-              ))}
-            </span>
-          ))}
-        </span>
+      <Link href="/download" aria-label={downloadLabel}>
+        <ActionLabel key={`${locale}-download`} text={downloadLabel} />
       </Link>
     </nav>
   </>;

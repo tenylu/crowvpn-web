@@ -22,13 +22,25 @@ export function getCrowmeshLoginUrl(redirectPath?: string | null) {
   return `${baseUrl}/user/login?redirect=${encodeURIComponent(redirectPath)}`;
 }
 
-export function getCrowmeshBuyPath(planId: string | number, period: string) {
+export function getCrowmeshBuyPath(
+  planId: string | number,
+  period: string,
+  options?: { seats?: number; team?: boolean },
+) {
   const normalizedPlanId = String(planId).replace(/\D/g, "");
   const normalizedPeriod = allowedPeriods.has(period) ? period : "month";
+  const query = new URLSearchParams({ period: normalizedPeriod });
 
-  return `/subscription/balance/${normalizedPlanId || "2"}?period=${normalizedPeriod}`;
+  if (options?.team) query.set("team", "1");
+  if (options?.seats && options.seats > 0) query.set("seats", String(options.seats));
+
+  return `/subscription/balance/${normalizedPlanId || "2"}?${query.toString()}`;
 }
 
-export function getCrowmeshBuyUrl(planId: string | number, period: string) {
-  return `${getCrowmeshUserBaseUrl()}${getCrowmeshBuyPath(planId, period)}`;
+export function getCrowmeshBuyUrl(
+  planId: string | number,
+  period: string,
+  options?: { seats?: number; team?: boolean },
+) {
+  return `${getCrowmeshUserBaseUrl()}${getCrowmeshBuyPath(planId, period, options)}`;
 }
